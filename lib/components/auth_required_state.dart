@@ -12,4 +12,3 @@ class AuthRequiredState<T extends StatefulWidget>
     }
   }
 }
-
