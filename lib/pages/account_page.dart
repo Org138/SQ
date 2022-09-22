@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase/supabase.dart';
 import 'package:supabase_quickstart/components/auth_required_state.dart';
+import 'package:supabase_quickstart/components/avatar.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
 
 class AccountPage extends StatefulWidget {
@@ -109,6 +110,8 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
                ElevatedButton(
                    onPressed: _updateProfile,
                    child: Text(_loading ? 'Saving...' : 'Update')),
+               const SizedBox(height: 18),
+               ElevatedButton(onPressed: _signOut, child: const Text('Sign Out')),
             ],
          ),
       );
