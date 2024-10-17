@@ -4,7 +4,7 @@ import 'package:supabase_quickstart/utils/constants.dart';
 
 class Avatar extends StatefulWidget {
   const Avatar ({
-  key? key,
+  Key? key,
   required this.imageUrl,
   required this.onUpload,
   }) : super(key: key);
@@ -48,7 +48,7 @@ class _AvatarState extends State<Avatar> {
   }
   Future<void> _upload() async {
     final _picker = ImagePicker();
-    final imageFile = await _picker.pickImage(
+    final XFile? imageFile = await _picker.pickImage(
       source: ImageSource.gallery,
       maxWidth: 300,
       maxHeight: 300,
@@ -59,8 +59,8 @@ class _AvatarState extends State<Avatar> {
     setState(() => _isLoading = true);
 
     final bytes = await imageFile.readAsBytes();
-    final fileExt = imageFile.path.split('.').last;
-    final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
+    final fileExt = imageFile.path.split('.').last;             //  $fileExt is causing problems. String is persisted in DB as "blob:http://localhost..."
+    final fileName = '${DateTime.now().toIso8601String()}.jpg'; //  Hard-coded 'jpg' seems to work for storage
     final filePath = fileName;
     final response =
         await supabase.storage.from('avatars').uploadBinary(filePath, bytes);

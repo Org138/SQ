@@ -4,6 +4,7 @@ import 'package:supabase_quickstart/components/auth_required_state.dart';
 import 'package:supabase_quickstart/components/avatar.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
 
+
 class AccountPage extends StatefulWidget {
    const AccountPage({Key? key}) : super(key: key);
 
@@ -14,37 +15,41 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends AuthRequiredState<AccountPage> {
    final _usernameController = TextEditingController();
    final _websiteController = TextEditingController();
+   String? _userId;
+   String? _avatarUrl;
    var _loading = false;
 
-   /// Called once a user id is received within 'onAuthenticated()'
+   /// Called once a user id is received within `onAuthenticated()`
    Future<void> _getProfile(String userId) async {
       setState(() {
-        _loading = true;
+         _loading = true;
       });
       final response = await supabase
-         .from('profiles')
-         .select()
-         .eq('id', userId)
-         .single()
-         .execute();
+          .from('profiles')
+          .select()
+          .eq('id', userId)
+          .single()
+          .execute();
       final error = response.error;
       if (error != null && response.status != 406) {
          context.showErrorSnackBar(message: error.message);
       }
+      const String token = '?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0cmJxZmlsem9raHpva2F6bGZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjEyOTMwNDksImV4cCI6MTk3Njg2OTA0OX0.0Jg6KQmSajak2k6Qsa46sQfEShH5GaewCiOab0KmJzM';
       final data = response.data;
       if (data != null) {
          _usernameController.text = (data['username'] ?? '') as String;
          _websiteController.text = (data['website'] ?? '') as String;
+         _avatarUrl = (data['avatar_url''token'] ?? '') as String; // added '?token' to fix 400 error; file header error shows now
       }
       setState(() {
-        _loading = false;
+         _loading = false;
       });
    }
 
-   /// Called when user taps 'Update' button
+   /// Called when user taps `Update` button
    Future<void> _updateProfile() async {
       setState(() {
-        _loading = true;
+         _loading = true;
       });
       final userName = _usernameController.text;
       final website = _websiteController.text;
@@ -63,7 +68,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
          context.showSnackBar(message: 'Successfully updated profile!');
       }
       setState(() {
-        _loading = false;
+         _loading = false;
       });
    }
 
@@ -73,14 +78,37 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
       if (error != null) {
          context.showErrorSnackBar(message: error.message);
       }
+      Navigator.of(context).pushReplacementNamed('/login');
+   }
+
+   /// Called when image has been uploaded to Supabase storage from within Avatar widget
+   Future<void> _onUpload(String imageUrl) async {
+      final response = await supabase.from('profiles').upsert({
+         'id': _userId,
+         'avatar_url': imageUrl,
+      }).execute();
+      final error = response.error;
+      if (error != null) {
+         context.showErrorSnackBar(message: error.message);
+      }
+      setState(() {
+         _avatarUrl = imageUrl;
+      });
+      context.showSnackBar(message: 'Updated your profile image!');
    }
 
    @override
    void onAuthenticated(Session session) {
       final user = session.user;
-      if (user != null){
+      if (user != null) {
+         _userId = user.id;
          _getProfile(user.id);
       }
+   }
+
+   @override
+   void onUnauthenticated() {
+      Navigator.of(context).pushReplacementNamed('/login');
    }
 
    @override
@@ -97,6 +125,11 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
          body: ListView(
             padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
             children: [
+               Avatar(
+                  imageUrl: _avatarUrl,
+                  onUpload: _onUpload,
+               ),
+               const SizedBox(height: 18),
                TextFormField(
                   controller: _usernameController,
                   decoration: const InputDecoration(labelText: 'User Name'),
@@ -104,7 +137,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
                const SizedBox(height: 18),
                TextFormField(
                   controller: _websiteController,
-                  decoration: const InputDecoration(labelText: 'Website'),
+                  decoration: const InputDecoration(labelText: 'Website' ),
                ),
                const SizedBox(height: 18),
                ElevatedButton(
@@ -117,20 +150,4 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
       );
    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
