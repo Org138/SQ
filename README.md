@@ -1,9 +1,9 @@
 # SQ
 
-A new Flutter project
+Initial base for SQ project. 
 
 ## Getting Started
 
-A Flutter application.
+No summary available - see code for details.
 
 
