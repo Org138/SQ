@@ -8,8 +8,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    url: 'https://wtrbqfilzokhzokazlfg.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0cmJxZmlsem9raHpva2F6bGZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjEyOTMwNDksImV4cCI6MTk3Njg2OTA0OX0.0Jg6KQmSajak2k6Qsa46sQfEShH5GaewCiOab0KmJzM',
+    url: 'https://.supabase.co',
+    anonKey: '',
   );
   runApp(MyApp());
 }
