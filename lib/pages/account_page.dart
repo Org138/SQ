@@ -34,7 +34,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
       if (error != null && response.status != 406) {
          context.showErrorSnackBar(message: error.message);
       }
-      const String token = '?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind0cmJxZmlsem9raHpva2F6bGZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjEyOTMwNDksImV4cCI6MTk3Njg2OTA0OX0.0Jg6KQmSajak2k6Qsa46sQfEShH5GaewCiOab0KmJzM';
+      const String token = '?token=';
       final data = response.data;
       if (data != null) {
          _usernameController.text = (data['username'] ?? '') as String;
