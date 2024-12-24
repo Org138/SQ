@@ -37,7 +37,7 @@ class _LoginPageState extends AuthState<LoginPage> {
       _isLoading = false;
     });
   }
-//
+// test on new token generation
   @override
   void initState() {
     super.initState();
