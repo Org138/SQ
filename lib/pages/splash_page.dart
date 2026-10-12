@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_quickstart/utils/constants.dart';
+import 'package:sqproject/utils/constants.dart';
 
 /// Sends the user to their account if a session was restored at startup,
 /// otherwise to the login page.

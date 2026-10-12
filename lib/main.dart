@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_quickstart/pages/account_page.dart';
-import 'package:supabase_quickstart/pages/login_page.dart';
-import 'package:supabase_quickstart/pages/splash_page.dart';
-import 'package:supabase_quickstart/pages/tasks_page.dart';
+import 'package:sqproject/pages/account_page.dart';
+import 'package:sqproject/pages/login_page.dart';
+import 'package:sqproject/pages/splash_page.dart';
+import 'package:sqproject/pages/tasks_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

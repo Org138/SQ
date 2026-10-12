@@ -1,4 +1,4 @@
-package com.example.supabase_quickstart
+package com.example.sqproject
 
 import io.flutter.embedding.android.FlutterActivity
 
