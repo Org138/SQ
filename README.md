@@ -114,6 +114,7 @@ Avatars go in the public `avatars` storage bucket under `<user id>/`.
 | 1 MB or smaller | Larger files are refused before uploading | The bucket's 1 MiB size limit |
 | Only into your own folder | The app always uploads to `<your user id>/` | Upload policy on `storage.objects` |
 | No overwriting or deleting | Each upload gets a new file name | No update or delete policies exist |
+| No listing the bucket | The app only builds public URLs | No select policy exists; public URLs don't need one |
 
 SVG and HTML are excluded on purpose: the bucket is public, and a file served
 with one of those types can run script in a visitor's browser.
