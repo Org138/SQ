@@ -1,9 +1,11 @@
 /// Task model and dependency-gating rules for the `tasks` and
 /// `task_dependencies` tables (see supabase/migrations).
 ///
-/// A task is blocked while any task it depends on is not done. Gating is
-/// enforced here in the client; the database only enforces ownership,
-/// valid statuses and acyclic links.
+/// A task is blocked while any task it depends on is not done. These rules
+/// let the UI explain and disable blocked actions up front; the database
+/// enforces the same rules with triggers (see the
+/// enforce_task_dependency_gating migration), so direct API calls can't
+/// bypass them.
 
 enum TaskStatus {
   todo('todo', 'To do'),

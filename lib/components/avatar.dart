@@ -61,7 +61,8 @@ class _AvatarState extends State<Avatar> {
     final bytes = await imageFile.readAsBytes();
     final fileExt = imageFile.path.split('.').last;             //  $fileExt is causing problems. String is persisted in DB as "blob:http://localhost..."
     final fileName = '${DateTime.now().toIso8601String()}.jpg'; //  Hard-coded 'jpg' seems to work for storage
-    final filePath = fileName;
+    // Storage policies only allow uploads into the user's own folder.
+    final filePath = '${supabase.auth.currentUser!.id}/$fileName';
     final response =
         await supabase.storage.from('avatars').uploadBinary(filePath, bytes);
 
