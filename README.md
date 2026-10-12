@@ -122,6 +122,22 @@ flutter test
 The tests don't need a Supabase project: the tasks page tests run against a
 fake in-memory backend.
 
+The database tests in `supabase/tests/database` check the row level security
+policies, the task gating triggers and the avatar upload rules with
+[pgTAP](https://supabase.com/docs/guides/database/testing). They need the
+local stack, which needs Docker:
+
+```bash
+supabase start
+```
+
+```bash
+supabase test db
+```
+
+GitHub Actions runs all three (`.github/workflows/ci.yml`) on every pull
+request and every push to `main`.
+
 ## Supabase MCP server
 
 `.mcp.json` registers the Supabase MCP server for Claude Code in **read-only**
