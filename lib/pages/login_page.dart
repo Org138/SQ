@@ -1,50 +1,69 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase/supabase.dart';
-import 'package:supabase_quickstart/components/auth_state.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends AuthState<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   late final TextEditingController _emailController;
+  late final StreamSubscription<AuthState> _authSubscription;
 
   Future<void> _signIn() async {
     setState(() {
       _isLoading = true;
     });
-    final response = await supabase.auth.signIn(
-      email: _emailController.text,
-      options: AuthOptions(
-        redirectTo: kIsWeb
-            ? null
-            : 'io.supabase.flutterquickstart://login-callback'));
-    final error = response.error;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
-    } else {
-      context.showSnackBar(message: 'Check your email for login link!');
-      _emailController.clear();
+    try {
+      await supabase.auth.signInWithOtp(
+        email: _emailController.text.trim(),
+        emailRedirectTo:
+            kIsWeb ? null : 'io.supabase.flutterquickstart://login-callback',
+      );
+      if (mounted) {
+        context.showSnackBar(message: 'Check your email for login link!');
+        _emailController.clear();
+      }
+    } on AuthException catch (error) {
+      if (mounted) context.showErrorSnackBar(message: error.message);
     }
-
+    if (!mounted) return;
     setState(() {
       _isLoading = false;
     });
   }
+
   @override
   void initState() {
     super.initState();
     _emailController = TextEditingController();
+    // Opening the magic link signs the user in (via deep link on mobile).
+    _authSubscription = supabase.auth.onAuthStateChange.listen(
+      (data) {
+        if (data.session != null && mounted) {
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil('/account', (route) => false);
+        }
+      },
+      onError: (Object error) {
+        if (mounted) {
+          context.showErrorSnackBar(
+              message: error is AuthException ? error.message : '$error');
+        }
+      },
+    );
   }
 
   @override
   void dispose() {
+    _authSubscription.cancel();
     _emailController.dispose();
     super.dispose();
   }

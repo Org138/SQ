@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
 
 class Avatar extends StatefulWidget {
@@ -63,19 +64,17 @@ class _AvatarState extends State<Avatar> {
     final fileName = '${DateTime.now().toIso8601String()}.jpg'; //  Hard-coded 'jpg' seems to work for storage
     // Storage policies only allow uploads into the user's own folder.
     final filePath = '${supabase.auth.currentUser!.id}/$fileName';
-    final response =
-        await supabase.storage.from('avatars').uploadBinary(filePath, bytes);
-
-    setState(() => _isLoading = false);
-
-    final error = response.error;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
-        return;
+    try {
+      await supabase.storage.from('avatars').uploadBinary(filePath, bytes);
+    } on StorageException catch (error) {
+      if (mounted) context.showErrorSnackBar(message: error.message);
+      return;
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
-    final imageUrlResponse =
-        supabase.storage.from('avatars').getPublicUrl(filePath);
-    widget.onUpload(imageUrlResponse.data!);
+
+    final imageUrl = supabase.storage.from('avatars').getPublicUrl(filePath);
+    widget.onUpload(imageUrl);
   }
 }
 

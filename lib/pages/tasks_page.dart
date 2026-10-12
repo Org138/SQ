@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_quickstart/components/auth_required_state.dart';
 import 'package:supabase_quickstart/models/task.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
@@ -7,10 +7,10 @@ import 'package:supabase_quickstart/utils/constants.dart';
 /// Lists the user's tasks grouped by state. A task can't be started or
 /// finished until everything it depends on is done.
 class TasksPage extends StatefulWidget {
-  const TasksPage({Key? key}) : super(key: key);
+  const TasksPage({super.key});
 
   @override
-  _TasksPageState createState() => _TasksPageState();
+  State<TasksPage> createState() => _TasksPageState();
 }
 
 class _TasksPageState extends AuthRequiredState<TasksPage> {
@@ -21,41 +21,37 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     setState(() {
       _loading = true;
     });
-    final tasksResponse = await supabase
-        .from('tasks')
-        .select('id, title, description, status, due_date')
-        .order('created_at', ascending: true)
-        .execute();
-    final depsResponse = await supabase
-        .from('task_dependencies')
-        .select('task_id, depends_on_task_id')
-        .execute();
-    if (!mounted) return;
-    final error = tasksResponse.error ?? depsResponse.error;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
-    } else {
+    try {
+      final tasks = await supabase
+          .from('tasks')
+          .select('id, title, description, status, due_date')
+          .order('created_at', ascending: true);
+      final dependencies = await supabase
+          .from('task_dependencies')
+          .select('task_id, depends_on_task_id');
       _board = TaskBoard(
-        (tasksResponse.data as List)
-            .map((row) => Task.fromMap(row as Map<String, dynamic>))
-            .toList(),
-        (depsResponse.data as List)
-            .map((row) => TaskDependency.fromMap(row as Map<String, dynamic>))
-            .toList(),
+        tasks.map(Task.fromMap).toList(),
+        dependencies.map(TaskDependency.fromMap).toList(),
       );
+    } catch (error) {
+      if (mounted) context.showErrorSnackBar(message: _errorMessage(error));
     }
+    if (!mounted) return;
     setState(() {
       _loading = false;
     });
   }
 
-  /// Shows [error] if any, otherwise reloads. Returns whether it succeeded.
-  Future<bool> _afterWrite(PostgrestError? error) async {
-    if (!mounted) return false;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
+  /// Runs [write], then reloads. Shows the database's message if it fails
+  /// (e.g. a gating trigger rejected it). Returns whether it succeeded.
+  Future<bool> _write(Future<void> Function() write) async {
+    try {
+      await write();
+    } catch (error) {
+      if (mounted) context.showErrorSnackBar(message: _errorMessage(error));
       return false;
     }
+    if (!mounted) return false;
     await _loadTasks();
     return true;
   }
@@ -66,12 +62,9 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       context.showErrorSnackBar(message: reason);
       return;
     }
-    final response = await supabase
+    await _write(() => supabase
         .from('tasks')
-        .update({'status': status.dbValue}, returning: ReturningOption.minimal)
-        .eq('id', task.id)
-        .execute();
-    await _afterWrite(response.error);
+        .update({'status': status.dbValue}).eq('id', task.id));
   }
 
   Future<void> _createTask() async {
@@ -80,12 +73,11 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       builder: (_) => const _NewTaskDialog(),
     );
     if (result == null) return;
-    final response = await supabase.from('tasks').insert({
-      'title': result.title,
-      if (result.description.isNotEmpty) 'description': result.description,
-      if (result.dueDate != null) 'due_date': _formatDate(result.dueDate!),
-    }, returning: ReturningOption.minimal).execute();
-    await _afterWrite(response.error);
+    await _write(() => supabase.from('tasks').insert({
+          'title': result.title,
+          if (result.description.isNotEmpty) 'description': result.description,
+          if (result.dueDate != null) 'due_date': _formatDate(result.dueDate!),
+        }));
   }
 
   Future<void> _deleteTask(Task task) async {
@@ -112,12 +104,7 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       ),
     );
     if (confirmed != true) return;
-    final response = await supabase
-        .from('tasks')
-        .delete(returning: ReturningOption.minimal)
-        .eq('id', task.id)
-        .execute();
-    await _afterWrite(response.error);
+    await _write(() => supabase.from('tasks').delete().eq('id', task.id));
   }
 
   Future<void> _editDependencies(Task task) async {
@@ -141,22 +128,18 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     if (added.isEmpty && removed.isEmpty) return;
 
     if (removed.isNotEmpty) {
-      final response = await supabase
+      final ok = await _write(() => supabase
           .from('task_dependencies')
-          .delete(returning: ReturningOption.minimal)
+          .delete()
           .eq('task_id', task.id)
-          .in_('depends_on_task_id', removed.toList())
-          .execute();
-      if (!await _afterWrite(response.error)) return;
+          .inFilter('depends_on_task_id', removed.toList()));
+      if (!ok) return;
     }
     if (added.isNotEmpty) {
-      final response = await supabase
-          .from('task_dependencies')
-          .insert([
-            for (final id in added) {'task_id': task.id, 'depends_on_task_id': id}
-          ], returning: ReturningOption.minimal)
-          .execute();
-      await _afterWrite(response.error);
+      await _write(() => supabase.from('task_dependencies').insert([
+            for (final id in added)
+              {'task_id': task.id, 'depends_on_task_id': id}
+          ]));
     }
   }
 
@@ -224,7 +207,7 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
         child: Text(
           '$title (${tasks.length})',
-          style: Theme.of(context).textTheme.subtitle2,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
       ),
       for (final task in tasks) _taskTile(task),
@@ -292,7 +275,7 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(label),
-                Text(reason, style: Theme.of(context).textTheme.caption),
+                Text(reason, style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
     );
@@ -337,6 +320,12 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
   }
 }
 
+/// Database errors carry a readable message (including the gating
+/// triggers'); anything else, such as being offline, gets a generic one.
+String _errorMessage(Object error) => error is PostgrestException
+    ? error.message
+    : "Couldn't reach the server. Check your connection and try again.";
+
 /// Status actions share names with [TaskStatus] values.
 enum _TaskAction { todo, inProgress, done, dependencies, delete }
 
@@ -353,7 +342,7 @@ class _NewTask {
 }
 
 class _NewTaskDialog extends StatefulWidget {
-  const _NewTaskDialog({Key? key}) : super(key: key);
+  const _NewTaskDialog();
 
   @override
   _NewTaskDialogState createState() => _NewTaskDialogState();
@@ -454,11 +443,10 @@ class _NewTaskDialogState extends State<_NewTaskDialog> {
 
 class _DependenciesDialog extends StatefulWidget {
   const _DependenciesDialog({
-    Key? key,
     required this.task,
     required this.candidates,
     required this.initial,
-  }) : super(key: key);
+  });
 
   final Task task;
   final List<Task> candidates;

@@ -6,6 +6,7 @@
 /// enforces the same rules with triggers (see the
 /// enforce_task_dependency_gating migration), so direct API calls can't
 /// bypass them.
+library;
 
 enum TaskStatus {
   todo('todo', 'To do'),
