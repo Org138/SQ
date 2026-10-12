@@ -7,9 +7,19 @@ import 'package:supabase_quickstart/pages/splash_page.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Supplied at build/run time so credentials never live in source control,
+  // e.g. flutter run --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_ANON_KEY=...
+  const supabaseUrl = String.fromEnvironment('SUPABASE_URL');
+  const supabaseAnonKey = String.fromEnvironment('SUPABASE_ANON_KEY');
+  if (supabaseUrl.isEmpty || supabaseAnonKey.isEmpty) {
+    throw StateError(
+        'SUPABASE_URL and SUPABASE_ANON_KEY must be set via --dart-define '
+        'or --dart-define-from-file. See README.md.');
+  }
+
   await Supabase.initialize(
-    url: 'https://.supabase.co',
-    anonKey: '',
+    url: supabaseUrl,
+    anonKey: supabaseAnonKey,
   );
   runApp(MyApp());
 }
