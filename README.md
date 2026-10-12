@@ -54,6 +54,14 @@ flutter run --dart-define-from-file=supabase.json
 The app stops at startup with an error if `SUPABASE_URL` or
 `SUPABASE_ANON_KEY` is missing.
 
+On web, the magic link always returns to the project's Site URL, but Flutter
+serves on a random port by default. Pin the port so it matches, for example
+for a Site URL of `http://localhost:3000`:
+
+```bash
+flutter run -d chrome --web-port 3000 --dart-define-from-file=supabase.json
+```
+
 ## How it works
 
 The Flutter app talks to Supabase directly with the anon or publishable key,
