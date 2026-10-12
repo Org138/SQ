@@ -135,7 +135,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
           ),
           const SizedBox(height: 18),
           ElevatedButton(
-              onPressed: _updateProfile,
+              onPressed: _loading ? null : _updateProfile,
               child: Text(_loading ? 'Saving...' : 'Update')),
           const SizedBox(height: 18),
           ElevatedButton(
