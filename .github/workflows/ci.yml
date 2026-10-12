@@ -63,3 +63,5 @@ jobs:
       # Applies supabase/migrations to a fresh local stack
       - run: supabase start
       - run: supabase test db
+      # Two sessions at once, which pgTAP can't do; uses the runner's psql
+      - run: supabase/tests/concurrency/dependency_cycle_race.sh

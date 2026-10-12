@@ -88,8 +88,9 @@ while any task it depends on isn't done.
 | No cycles (A blocked by B blocked by A) | The dependency dialog only lists tasks that wouldn't create one | `task_dependencies_prevent_cycle` trigger |
 | A task can't depend on itself | Not offered in the dialog | `check` constraint |
 
-The triggers lock the rows they check (`for share`), so two changes made at
-the same moment can't both get past the same rule. They raise readable
+The gating triggers lock the rows they check (`for share`), and the cycle
+check makes each user's dependency changes take turns (an advisory lock), so
+two changes made at the same moment can't both get past the same rule. They raise readable
 messages such as `Blocked by "Write tests"`, and the app shows those as is.
 
 ### Who can see and change what
@@ -141,6 +142,14 @@ supabase start
 
 ```bash
 supabase test db
+```
+
+pgTAP runs in a single session, so one test that needs two sessions at once
+is a script instead. It adds A blocked by B and B blocked by A at the same
+moment and checks that the second is refused. It needs `psql`:
+
+```bash
+supabase/tests/concurrency/dependency_cycle_race.sh
 ```
 
 The browser tests in `e2e/` open the release web build in Chromium with
