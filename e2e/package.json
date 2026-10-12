@@ -1,0 +1,12 @@
+{
+  "name": "sqproject-e2e",
+  "private": true,
+  "description": "Browser test against the Flutter web build (see README.md)",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.0",
+    "http-server": "14.1.1"
+  }
+}
