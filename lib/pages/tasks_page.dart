@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_quickstart/components/auth_required_state.dart';
 import 'package:supabase_quickstart/models/task.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
@@ -21,41 +21,37 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     setState(() {
       _loading = true;
     });
-    final tasksResponse = await supabase
-        .from('tasks')
-        .select('id, title, description, status, due_date')
-        .order('created_at', ascending: true)
-        .execute();
-    final depsResponse = await supabase
-        .from('task_dependencies')
-        .select('task_id, depends_on_task_id')
-        .execute();
-    if (!mounted) return;
-    final error = tasksResponse.error ?? depsResponse.error;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
-    } else {
+    try {
+      final tasks = await supabase
+          .from('tasks')
+          .select('id, title, description, status, due_date')
+          .order('created_at', ascending: true);
+      final dependencies = await supabase
+          .from('task_dependencies')
+          .select('task_id, depends_on_task_id');
       _board = TaskBoard(
-        (tasksResponse.data as List)
-            .map((row) => Task.fromMap(row as Map<String, dynamic>))
-            .toList(),
-        (depsResponse.data as List)
-            .map((row) => TaskDependency.fromMap(row as Map<String, dynamic>))
-            .toList(),
+        tasks.map(Task.fromMap).toList(),
+        dependencies.map(TaskDependency.fromMap).toList(),
       );
+    } on PostgrestException catch (error) {
+      if (mounted) context.showErrorSnackBar(message: error.message);
     }
+    if (!mounted) return;
     setState(() {
       _loading = false;
     });
   }
 
-  /// Shows [error] if any, otherwise reloads. Returns whether it succeeded.
-  Future<bool> _afterWrite(PostgrestError? error) async {
-    if (!mounted) return false;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
+  /// Runs [write], then reloads. Shows the database's message if it fails
+  /// (e.g. a gating trigger rejected it). Returns whether it succeeded.
+  Future<bool> _write(Future<void> Function() write) async {
+    try {
+      await write();
+    } on PostgrestException catch (error) {
+      if (mounted) context.showErrorSnackBar(message: error.message);
       return false;
     }
+    if (!mounted) return false;
     await _loadTasks();
     return true;
   }
@@ -66,12 +62,9 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       context.showErrorSnackBar(message: reason);
       return;
     }
-    final response = await supabase
+    await _write(() => supabase
         .from('tasks')
-        .update({'status': status.dbValue}, returning: ReturningOption.minimal)
-        .eq('id', task.id)
-        .execute();
-    await _afterWrite(response.error);
+        .update({'status': status.dbValue}).eq('id', task.id));
   }
 
   Future<void> _createTask() async {
@@ -80,12 +73,11 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       builder: (_) => const _NewTaskDialog(),
     );
     if (result == null) return;
-    final response = await supabase.from('tasks').insert({
-      'title': result.title,
-      if (result.description.isNotEmpty) 'description': result.description,
-      if (result.dueDate != null) 'due_date': _formatDate(result.dueDate!),
-    }, returning: ReturningOption.minimal).execute();
-    await _afterWrite(response.error);
+    await _write(() => supabase.from('tasks').insert({
+          'title': result.title,
+          if (result.description.isNotEmpty) 'description': result.description,
+          if (result.dueDate != null) 'due_date': _formatDate(result.dueDate!),
+        }));
   }
 
   Future<void> _deleteTask(Task task) async {
@@ -112,12 +104,7 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       ),
     );
     if (confirmed != true) return;
-    final response = await supabase
-        .from('tasks')
-        .delete(returning: ReturningOption.minimal)
-        .eq('id', task.id)
-        .execute();
-    await _afterWrite(response.error);
+    await _write(() => supabase.from('tasks').delete().eq('id', task.id));
   }
 
   Future<void> _editDependencies(Task task) async {
@@ -141,22 +128,18 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     if (added.isEmpty && removed.isEmpty) return;
 
     if (removed.isNotEmpty) {
-      final response = await supabase
+      final ok = await _write(() => supabase
           .from('task_dependencies')
-          .delete(returning: ReturningOption.minimal)
+          .delete()
           .eq('task_id', task.id)
-          .in_('depends_on_task_id', removed.toList())
-          .execute();
-      if (!await _afterWrite(response.error)) return;
+          .inFilter('depends_on_task_id', removed.toList()));
+      if (!ok) return;
     }
     if (added.isNotEmpty) {
-      final response = await supabase
-          .from('task_dependencies')
-          .insert([
-            for (final id in added) {'task_id': task.id, 'depends_on_task_id': id}
-          ], returning: ReturningOption.minimal)
-          .execute();
-      await _afterWrite(response.error);
+      await _write(() => supabase.from('task_dependencies').insert([
+            for (final id in added)
+              {'task_id': task.id, 'depends_on_task_id': id}
+          ]));
     }
   }
 

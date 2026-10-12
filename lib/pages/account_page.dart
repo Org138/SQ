@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:supabase/supabase.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_quickstart/components/auth_required_state.dart';
 import 'package:supabase_quickstart/components/avatar.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
@@ -24,22 +24,22 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
     setState(() {
       _loading = true;
     });
-    final response = await supabase
-        .from('profiles')
-        .select()
-        .eq('id', userId)
-        .single()
-        .execute();
-    final error = response.error;
-    if (error != null && response.status != 406) {
-      context.showErrorSnackBar(message: error.message);
+    try {
+      // A profile row may not exist yet, so allow zero rows.
+      final data = await supabase
+          .from('profiles')
+          .select()
+          .eq('id', userId)
+          .maybeSingle();
+      if (data != null) {
+        _usernameController.text = (data['username'] ?? '') as String;
+        _websiteController.text = (data['website'] ?? '') as String;
+        _avatarUrl = data['avatar_url'] as String?;
+      }
+    } on PostgrestException catch (error) {
+      if (mounted) context.showErrorSnackBar(message: error.message);
     }
-    final data = response.data;
-    if (data != null) {
-      _usernameController.text = (data['username'] ?? '') as String;
-      _websiteController.text = (data['website'] ?? '') as String;
-      _avatarUrl = (data['avatar_url'] ?? '') as String;
-    }
+    if (!mounted) return;
     setState(() {
       _loading = false;
     });
@@ -59,13 +59,13 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
       'website': website,
       'updated_at': DateTime.now().toIso8601String(),
     };
-    final response = await supabase.from('profiles').upsert(updates).execute();
-    final error = response.error;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
-    } else {
-      context.showSnackBar(message: 'Successfully updated profile!');
+    try {
+      await supabase.from('profiles').upsert(updates);
+      if (mounted) context.showSnackBar(message: 'Successfully updated profile!');
+    } on PostgrestException catch (error) {
+      if (mounted) context.showErrorSnackBar(message: error.message);
     }
+    if (!mounted) return;
     setState(() {
       _loading = false;
     });
@@ -82,14 +82,16 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
 
   /// Called when image has been uploaded to Supabase storage from within Avatar widget
   Future<void> _onUpload(String imageUrl) async {
-    final response = await supabase.from('profiles').upsert({
-      'id': _userId,
-      'avatar_url': imageUrl,
-    }).execute();
-    final error = response.error;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
+    try {
+      await supabase.from('profiles').upsert({
+        'id': _userId,
+        'avatar_url': imageUrl,
+      });
+    } on PostgrestException catch (error) {
+      if (mounted) context.showErrorSnackBar(message: error.message);
+      return;
     }
+    if (!mounted) return;
     setState(() {
       _avatarUrl = imageUrl;
     });
