@@ -1,11 +1,11 @@
 {
-    "name": "supabase_quickstart",
-    "short_name": "supabase_quickstart",
+    "name": "sqproject",
+    "short_name": "sqproject",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Tasks with dependencies, a profile and an avatar, on Supabase.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

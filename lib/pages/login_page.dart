@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_quickstart/utils/constants.dart';
+import 'package:sqproject/utils/constants.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
       await supabase.auth.signInWithOtp(
         email: _emailController.text.trim(),
         emailRedirectTo:
-            kIsWeb ? null : 'io.supabase.flutterquickstart://login-callback',
+            kIsWeb ? null : 'io.supabase.sqproject://login-callback',
       );
       if (mounted) {
         context.showSnackBar(message: 'Check your email for login link!');

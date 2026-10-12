@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_quickstart/utils/constants.dart';
+import 'package:sqproject/utils/constants.dart';
 
 /// Base state for pages that need a signed-in user.
 ///

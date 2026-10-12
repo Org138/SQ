@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:supabase_quickstart/components/auth_required_state.dart';
-import 'package:supabase_quickstart/models/task.dart';
-import 'package:supabase_quickstart/utils/constants.dart';
+import 'package:sqproject/components/auth_required_state.dart';
+import 'package:sqproject/models/task.dart';
+import 'package:sqproject/utils/constants.dart';
 
 /// Lists the user's tasks grouped by state. A task can't be started or
 /// finished until everything it depends on is done.

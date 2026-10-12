@@ -32,7 +32,7 @@ supabase start
 ### 2. Allow the sign-in redirect
 
 On Android and iOS the magic link opens the app through
-`io.supabase.flutterquickstart://login-callback`. For a hosted project, add
+`io.supabase.sqproject://login-callback`. For a hosted project, add
 that URL under **Authentication → URL Configuration → Redirect URLs** in the
 dashboard. The local stack already allows it (`supabase/config.toml`).
 

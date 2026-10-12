@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:supabase_quickstart/models/task.dart';
+import 'package:sqproject/models/task.dart';
 
 Task _task(String id, [TaskStatus status = TaskStatus.todo]) =>
     Task(id: id, title: id, status: status);
