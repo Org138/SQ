@@ -185,3 +185,9 @@ For write access, add a personal server that stays out of the repo:
 ```bash
 claude mcp add --scope local --transport http supabase-write "https://mcp.supabase.com/mcp?project_ref=<your-project-ref>&features=database%2Cdocs%2Cdebugging%2Cdevelopment"
 ```
+
+The Supabase agent skills aren't committed. After cloning, install them into `.agents/skills` and link them for Claude Code:
+
+```bash
+npx skills add supabase/agent-skills
+```
