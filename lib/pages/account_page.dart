@@ -6,10 +6,10 @@ import 'package:supabase_quickstart/utils/constants.dart';
 
 
 class AccountPage extends StatefulWidget {
-  const AccountPage({Key? key}) : super(key: key);
+  const AccountPage({super.key});
 
   @override
-  _AccountPageState createState() => _AccountPageState();
+  State<AccountPage> createState() => _AccountPageState();
 }
 
 class _AccountPageState extends AuthRequiredState<AccountPage> {
@@ -71,13 +71,14 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
     });
   }
 
+  /// The signedOut auth event sends the user to the login page
+  /// (see AuthRequiredState).
   Future<void> _signOut() async {
-    final response = await supabase.auth.signOut();
-    final error = response.error;
-    if (error != null) {
-      context.showErrorSnackBar(message: error.message);
+    try {
+      await supabase.auth.signOut();
+    } on AuthException catch (error) {
+      if (mounted) context.showErrorSnackBar(message: error.message);
     }
-    Navigator.of(context).pushReplacementNamed('/login');
   }
 
   /// Called when image has been uploaded to Supabase storage from within Avatar widget
@@ -100,16 +101,8 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
 
   @override
   void onAuthenticated(Session session) {
-    final user = session.user;
-    if (user != null) {
-      _userId = user.id;
-      _getProfile(user.id);
-    }
-  }
-
-  @override
-  void onUnauthenticated() {
-    Navigator.of(context).pushReplacementNamed('/login');
+    _userId = session.user.id;
+    _getProfile(session.user.id);
   }
 
   @override

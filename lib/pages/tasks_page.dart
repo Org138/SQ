@@ -7,10 +7,10 @@ import 'package:supabase_quickstart/utils/constants.dart';
 /// Lists the user's tasks grouped by state. A task can't be started or
 /// finished until everything it depends on is done.
 class TasksPage extends StatefulWidget {
-  const TasksPage({Key? key}) : super(key: key);
+  const TasksPage({super.key});
 
   @override
-  _TasksPageState createState() => _TasksPageState();
+  State<TasksPage> createState() => _TasksPageState();
 }
 
 class _TasksPageState extends AuthRequiredState<TasksPage> {
