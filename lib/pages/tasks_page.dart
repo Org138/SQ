@@ -207,7 +207,7 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
         child: Text(
           '$title (${tasks.length})',
-          style: Theme.of(context).textTheme.subtitle2,
+          style: Theme.of(context).textTheme.titleSmall,
         ),
       ),
       for (final task in tasks) _taskTile(task),
@@ -275,7 +275,7 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(label),
-                Text(reason, style: Theme.of(context).textTheme.caption),
+                Text(reason, style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
     );
@@ -336,7 +336,7 @@ class _NewTask {
 }
 
 class _NewTaskDialog extends StatefulWidget {
-  const _NewTaskDialog({Key? key}) : super(key: key);
+  const _NewTaskDialog();
 
   @override
   _NewTaskDialogState createState() => _NewTaskDialogState();
@@ -437,11 +437,10 @@ class _NewTaskDialogState extends State<_NewTaskDialog> {
 
 class _DependenciesDialog extends StatefulWidget {
   const _DependenciesDialog({
-    Key? key,
     required this.task,
     required this.candidates,
     required this.initial,
-  }) : super(key: key);
+  });
 
   final Task task;
   final List<Task> candidates;
