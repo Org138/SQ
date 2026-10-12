@@ -143,6 +143,10 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
               onPressed: _updateProfile,
               child: Text(_loading ? 'Saving...' : 'Update')),
           const SizedBox(height: 18),
+          ElevatedButton(
+              onPressed: () => Navigator.of(context).pushNamed('/tasks'),
+              child: const Text('My Tasks')),
+          const SizedBox(height: 18),
           ElevatedButton(onPressed: _signOut, child: const Text('Sign Out')),
         ],
       ),
