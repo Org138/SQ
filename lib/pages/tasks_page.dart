@@ -33,8 +33,8 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
         tasks.map(Task.fromMap).toList(),
         dependencies.map(TaskDependency.fromMap).toList(),
       );
-    } on PostgrestException catch (error) {
-      if (mounted) context.showErrorSnackBar(message: error.message);
+    } catch (error) {
+      if (mounted) context.showErrorSnackBar(message: _errorMessage(error));
     }
     if (!mounted) return;
     setState(() {
@@ -47,8 +47,8 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
   Future<bool> _write(Future<void> Function() write) async {
     try {
       await write();
-    } on PostgrestException catch (error) {
-      if (mounted) context.showErrorSnackBar(message: error.message);
+    } catch (error) {
+      if (mounted) context.showErrorSnackBar(message: _errorMessage(error));
       return false;
     }
     if (!mounted) return false;
@@ -319,6 +319,12 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     }
   }
 }
+
+/// Database errors carry a readable message (including the gating
+/// triggers'); anything else, such as being offline, gets a generic one.
+String _errorMessage(Object error) => error is PostgrestException
+    ? error.message
+    : "Couldn't reach the server. Check your connection and try again.";
 
 /// Status actions share names with [TaskStatus] values.
 enum _TaskAction { todo, inProgress, done, dependencies, delete }
