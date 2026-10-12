@@ -47,3 +47,11 @@ app.*.map.json
 
 # Local Supabase credentials (see supabase.example.json)
 supabase.json
+
+# Claude Code: personal permissions, and skill links to absolute local paths
+.claude/settings.local.json
+.claude/skills/
+
+# Agent skills, installed locally with npx skills add supabase/agent-skills
+.agents/skills/
+skills-lock.json
