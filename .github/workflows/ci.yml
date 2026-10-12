@@ -20,6 +20,38 @@ jobs:
       - run: flutter analyze
       - run: flutter test
 
+  web:
+    name: Browser test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.7
+          cache: true
+      # No Supabase runs at this URL; the test answers requests itself
+      - run: >-
+          flutter build web --release --no-web-resources-cdn
+          --dart-define=SUPABASE_URL=http://127.0.0.1:54321
+          --dart-define=SUPABASE_ANON_KEY=browser-test-key
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: e2e/package-lock.json
+      - run: npm ci
+        working-directory: e2e
+      - run: npx playwright install --with-deps chromium
+        working-directory: e2e
+      - run: npx playwright test
+        working-directory: e2e
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: e2e/test-results/
+
   database:
     name: Database tests
     runs-on: ubuntu-latest
