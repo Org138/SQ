@@ -18,6 +18,10 @@ class Avatar extends StatefulWidget {
 }
 
 class _AvatarState extends State<Avatar> {
+  static const _allowedTypes = {'image/jpeg', 'image/png', 'image/webp'};
+  static const _allowedExtensions = {'jpg', 'jpeg', 'png', 'webp'};
+  static const _maxBytes = 1024 * 1024;
+
   bool _isLoading = false;
 
   @override
@@ -67,6 +71,23 @@ class _AvatarState extends State<Avatar> {
         name.contains('.') ? name.split('.').last.toLowerCase() : 'jpg';
     final contentType = imageFile.mimeType ??
         'image/${fileExt == 'jpg' ? 'jpeg' : fileExt}';
+    // Mirrors the avatars bucket limits (see the restrict_avatar_file_types
+    // migration), which the server enforces regardless.
+    if (!_allowedTypes.contains(contentType) ||
+        !_allowedExtensions.contains(fileExt)) {
+      if (mounted) {
+        context.showErrorSnackBar(message: 'Use a JPEG, PNG or WebP image.');
+        setState(() => _isLoading = false);
+      }
+      return;
+    }
+    if (bytes.length > _maxBytes) {
+      if (mounted) {
+        context.showErrorSnackBar(message: 'Images must be 1 MB or smaller.');
+        setState(() => _isLoading = false);
+      }
+      return;
+    }
     final fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExt';
     // Storage policies only allow uploads into the user's own folder.
     final filePath = '${supabase.auth.currentUser!.id}/$fileName';
