@@ -4,17 +4,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:supabase_quickstart/utils/constants.dart';
 
 class Avatar extends StatefulWidget {
-  const Avatar ({
-  Key? key,
-  required this.imageUrl,
-  required this.onUpload,
-  }) : super(key: key);
+  const Avatar({
+    super.key,
+    required this.imageUrl,
+    required this.onUpload,
+  });
 
   final String? imageUrl;
   final void Function(String) onUpload;
 
   @override
-  _AvatarState createState() => _AvatarState();
+  State<Avatar> createState() => _AvatarState();
 }
 
 class _AvatarState extends State<Avatar> {
@@ -24,7 +24,7 @@ class _AvatarState extends State<Avatar> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if(widget.imageUrl == null)
+        if (widget.imageUrl == null)
           Container(
             width: 150,
             height: 150,
@@ -41,15 +41,16 @@ class _AvatarState extends State<Avatar> {
             fit: BoxFit.cover,
           ),
         ElevatedButton(
-          onPressed: _isLoading ? null: _upload,
+          onPressed: _isLoading ? null : _upload,
           child: const Text('Upload'),
         ),
       ],
     );
   }
+
   Future<void> _upload() async {
-    final _picker = ImagePicker();
-    final XFile? imageFile = await _picker.pickImage(
+    final picker = ImagePicker();
+    final imageFile = await picker.pickImage(
       source: ImageSource.gallery,
       maxWidth: 300,
       maxHeight: 300,
@@ -60,12 +61,21 @@ class _AvatarState extends State<Avatar> {
     setState(() => _isLoading = true);
 
     final bytes = await imageFile.readAsBytes();
-    final fileExt = imageFile.path.split('.').last;             //  $fileExt is causing problems. String is persisted in DB as "blob:http://localhost..."
-    final fileName = '${DateTime.now().toIso8601String()}.jpg'; //  Hard-coded 'jpg' seems to work for storage
+    // Use the file's name, not its path: on web the path is a blob: URL.
+    final name = imageFile.name;
+    final fileExt =
+        name.contains('.') ? name.split('.').last.toLowerCase() : 'jpg';
+    final contentType = imageFile.mimeType ??
+        'image/${fileExt == 'jpg' ? 'jpeg' : fileExt}';
+    final fileName = '${DateTime.now().millisecondsSinceEpoch}.$fileExt';
     // Storage policies only allow uploads into the user's own folder.
     final filePath = '${supabase.auth.currentUser!.id}/$fileName';
     try {
-      await supabase.storage.from('avatars').uploadBinary(filePath, bytes);
+      await supabase.storage.from('avatars').uploadBinary(
+            filePath,
+            bytes,
+            fileOptions: FileOptions(contentType: contentType),
+          );
     } on StorageException catch (error) {
       if (mounted) context.showErrorSnackBar(message: error.message);
       return;
@@ -77,4 +87,3 @@ class _AvatarState extends State<Avatar> {
     widget.onUpload(imageUrl);
   }
 }
-
