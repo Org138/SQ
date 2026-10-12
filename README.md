@@ -119,6 +119,69 @@ Avatars go in the public `avatars` storage bucket under `<user id>/`.
 SVG and HTML are excluded on purpose: the bucket is public, and a file served
 with one of those types can run script in a visitor's browser.
 
+### Agents hit the same rules
+
+The rules live in the database, so an AI agent with database access gets the
+same answers as the app:
+
+- **Reading as a user:** row level security limits the agent to that user's
+  tasks.
+- **Read-only access:** in a read-only session, like the one the read-only MCP
+  server in `.mcp.json` uses, Postgres refuses every write.
+- **Writing:** the gating triggers don't check who is asking, so they refuse
+  a blocked start even from the `postgres` role, which skips row level
+  security.
+
+This transcript is from Claude Code working with the local stack
+(`supabase start`) through `psql`, as a demo user with three tasks. "Ship
+release" depends on "Set up CI", which is done, and on "Write tests", which is
+in progress. It asks "What's blocking my next task?" in a read-only
+transaction, then tries to start the blocked task:
+
+```text
+> What's blocking my next task?
+
+begin read only;
+set local role authenticated;  -- plus the demo user's JWT claims
+show transaction_read_only;
+ transaction_read_only
+-----------------------
+ on
+
+with next_task as (
+  select id, title from public.tasks
+  where status = 'todo' order by created_at limit 1
+)
+select n.title as next_task, b.title as depends_on, b.status,
+       case when b.status <> 'done' then 'BLOCKING' else 'ok' end as verdict
+from next_task n
+join public.task_dependencies d on d.task_id = n.id
+join public.tasks b on b.id = d.depends_on_task_id
+order by verdict, b.title;
+  next_task   | depends_on  |   status    | verdict
+--------------+-------------+-------------+----------
+ Ship release | Write tests | in_progress | BLOCKING
+ Ship release | Set up CI   | done        | ok
+rollback;
+
+> Start "Ship release".
+
+begin;
+set local role authenticated;  -- plus the demo user's JWT claims
+update public.tasks set status = 'in_progress' where title = 'Ship release';
+ERROR:  23514: Blocked by "Write tests"
+HINT:  Finish those tasks first.
+CONTEXT:  PL/pgSQL function public.enforce_task_status_gating() line 24 at RAISE
+rollback;
+```
+
+The refusal is the same `Blocked by "Write tests"` message the app shows. When
+the run was repeated, starting the task inside the read-only transaction
+failed with `cannot execute UPDATE in a read-only transaction`. Running the
+update as `postgres` failed with the same `Blocked by` error. "Ship release"
+stayed To do every time. `supabase/tests/database/tasks.test.sql` checks the
+same refusal in CI.
+
 ## Development
 
 ```bash
