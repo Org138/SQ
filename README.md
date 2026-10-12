@@ -135,7 +135,20 @@ supabase start
 supabase test db
 ```
 
-GitHub Actions runs all three (`.github/workflows/ci.yml`) on every pull
+The browser test in `e2e/` opens the release web build in Chromium with
+[Playwright](https://playwright.dev) and sends a magic link from the sign-in
+page. It doesn't need Supabase either: the test answers the sign-in request
+itself and checks what the app sent. It needs Node.js 18 or newer:
+
+```bash
+flutter build web --release --no-web-resources-cdn --dart-define=SUPABASE_URL=http://127.0.0.1:54321 --dart-define=SUPABASE_ANON_KEY=browser-test-key
+```
+
+```bash
+cd e2e && npm ci && npx playwright install chromium && npx playwright test
+```
+
+GitHub Actions runs all of these (`.github/workflows/ci.yml`) on every pull
 request and every push to `main`.
 
 ## Supabase MCP server
