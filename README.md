@@ -143,10 +143,16 @@ supabase start
 supabase test db
 ```
 
-The browser test in `e2e/` opens the release web build in Chromium with
-[Playwright](https://playwright.dev) and sends a magic link from the sign-in
-page. It doesn't need Supabase either: the test answers the sign-in request
-itself and checks what the app sent. It needs Node.js 18 or newer:
+The browser tests in `e2e/` open the release web build in Chromium with
+[Playwright](https://playwright.dev):
+
+- **Sign in:** sends a magic link from the sign-in page.
+- **Task board:** starts signed in, creates two tasks, makes one depend on
+  the other, and checks that the blocked task's **Start** is disabled and
+  that no status change was sent.
+
+They don't need Supabase either: the tests answer the app's requests
+themselves and check what it sent. They need Node.js 18 or newer:
 
 ```bash
 flutter build web --release --no-web-resources-cdn --dart-define=SUPABASE_URL=http://127.0.0.1:54321 --dart-define=SUPABASE_ANON_KEY=browser-test-key
