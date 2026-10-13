@@ -98,12 +98,8 @@ messages such as `Blocked by "Write tests"`, and the app shows those as is.
 
 Row level security limits each user to their own data:
 
-- **Tasks:** users see and change only the tasks they own. Dependencies can
-  only link two tasks owned by the same user.
-- **Profiles:** anyone can read them; users can only create or edit their
-  own. A profile is created automatically at sign-up by a trigger that can't
-  be called through the API. Usernames must be unique, but blank ones are
-  allowed.
+- **Tasks:** users see and change only the tasks they own. Dependencies can only link two tasks owned by the same user.
+- **Profiles:** anyone can read them; users can only create or edit their own. A profile is created automatically at sign-up by a trigger that can't be called through the API. Usernames must be unique, but blank ones are allowed.
 
 ### Avatars
 
@@ -117,33 +113,19 @@ Avatars go in the public `avatars` storage bucket under `<user id>/`.
 | No overwriting or deleting | Each upload gets a new file name | No update or delete policies exist |
 | No listing the bucket | The app only builds public URLs | No select policy exists; public URLs don't need one |
 
-SVG and HTML are excluded on purpose: the bucket is public, and a file served
-with one of those types can run script in a visitor's browser.
+SVG and HTML are excluded on purpose: the bucket is public, and a file served with one of those types can run a script in a visitor's browser.
 
 ### Agents hit the same rules
 
-The rules live in the database, so an AI agent with database access gets the
-same answers as the app:
+The rules live in the database, so an AI agent with database access gets the same answers as the app:
 
-- **Reading as a user:** row level security limits the agent to that user's
-  tasks, but only when it connects as that user, like the `psql` run below.
-  Connected as a service, like the MCP servers, it sees every user's rows and
-  has to filter by owner itself.
-- **Read-only access:** in a read-only session, like the one the read-only MCP
-  server in `.mcp.json` uses, Postgres refuses every write.
-- **Writing:** the gating triggers don't check who is asking, so they refuse
-  a blocked start even from the `postgres` role, which skips row level
-  security.
+- **Reading as a user:** row level security limits the agent to that user's tasks, but only when it connects as that user, like the `psql` run below. Connected as a service, like the MCP servers, it sees every user's rows and has to filter by owner itself.
+- **Read-only access:** in a read-only session, like the one the read-only MCP server in `.mcp.json` uses, Postgres refuses every write.
+- **Writing:** the gating triggers don't check who is asking, so they refuse a blocked start even from the `postgres` role, which skips row level security.
 
-Row level security depends on who is asking, but the task state rules don't,
-and agents often connect as a service rather than as a user, so rules that must
-hold whatever the identity belong in triggers or constraints.
+Row level security depends on who is asking, but the task state rules don't, and agents often connect as a service rather than as a user, so rules that must hold whatever the identity belong in triggers or constraints.
 
-This transcript is from Claude Code working with the local stack
-(`supabase start`) through `psql`, as a demo user with three tasks. "Ship
-release" depends on "Set up CI", which is done, and on "Write tests", which is
-in progress. It asks "What's blocking my next task?" in a read-only
-transaction, then tries to start the blocked task:
+This transcript is from Claude Code working with the local stack (`supabase start`) through `psql`, as a demo user with three tasks. "Ship release" depends on "Set up CI", which is done, and on "Write tests", which is in progress. It asks "What's blocking my next task?" in a read-only transaction, then tries to start the blocked task:
 
 ```text
 > What's blocking my next task?
@@ -182,18 +164,9 @@ CONTEXT:  PL/pgSQL function public.enforce_task_status_gating() line 24 at RAISE
 rollback;
 ```
 
-The refusal is the same `Blocked by "Write tests"` message the app shows. When
-the run was repeated, starting the task inside the read-only transaction
-failed with `cannot execute UPDATE in a read-only transaction`. Running the
-update as `postgres` failed with the same `Blocked by` error. "Ship release"
-stayed To do every time. `supabase/tests/database/tasks.test.sql` checks the
-same refusal in CI.
+The refusal is the same `Blocked by "Write tests"` message the app shows. When the run was repeated, starting the task inside the read-only transaction failed with `cannot execute UPDATE in a read-only transaction`. Running the update as `postgres` failed with the same `Blocked by` error. "Ship release" stayed To do every time. `supabase/tests/database/tasks.test.sql` checks the same refusal in CI.
 
-The same check against the hosted project went through MCP instead of `psql`:
-reads used the read-only `supabase` server, and only the start attempt used
-`supabase-write`. The read-only server has no signed-in user (`auth.uid()` is
-null and it can't switch to `authenticated`), so the query filters by owner
-itself:
+The same check against the hosted project went through MCP instead of `psql`: reads used the read-only `supabase` server, and only the start attempt used `supabase-write`. The read-only server has no signed-in user (`auth.uid()` is null and it can't switch to `authenticated`), so the query filters by owner itself:
 
 ```text
 > What's blocking my next task?
@@ -238,13 +211,10 @@ flutter analyze
 flutter test
 ```
 
-The tests don't need a Supabase project: the tasks page tests run against a
-fake in-memory backend.
+The tests don't need a Supabase project: the tasks page tests run against a fake in-memory backend.
 
-The database tests in `supabase/tests/database` check the row level security
-policies, the task gating triggers and the avatar upload rules with
-[pgTAP](https://supabase.com/docs/guides/database/testing). They need the
-local stack, which needs Docker:
+The database tests in `supabase/tests/database` check the row level security policies, the task gating triggers and the avatar upload rules with
+[pgTAP](https://supabase.com/docs/guides/database/testing). They need the local stack, which needs Docker:
 
 ```bash
 supabase start
@@ -254,9 +224,7 @@ supabase start
 supabase test db
 ```
 
-pgTAP runs in a single session, so one test that needs two sessions at once
-is a script instead. It adds A blocked by B and B blocked by A at the same
-moment and checks that the second is refused. It needs `psql`:
+pgTAP runs in a single session, so one test that needs two sessions at once is a script instead. It adds A blocked by B and B blocked by A at the same moment and checks that the second is refused. It needs `psql`:
 
 ```bash
 supabase/tests/concurrency/dependency_cycle_race.sh
