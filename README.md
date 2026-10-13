@@ -1,4 +1,5 @@
 # SQ
+[![CI](https://github.com/Org138/SQ/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Org138/SQ/actions/workflows/ci.yml)
 
 A Flutter + Supabase app: magic-link sign-in, a user profile with an avatar,
 and a task list where tasks can be blocked by other tasks.
