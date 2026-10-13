@@ -125,12 +125,18 @@ The rules live in the database, so an AI agent with database access gets the
 same answers as the app:
 
 - **Reading as a user:** row level security limits the agent to that user's
-  tasks.
+  tasks, but only when it connects as that user, like the `psql` run below.
+  Connected as a service, like the MCP servers, it sees every user's rows and
+  has to filter by owner itself.
 - **Read-only access:** in a read-only session, like the one the read-only MCP
   server in `.mcp.json` uses, Postgres refuses every write.
 - **Writing:** the gating triggers don't check who is asking, so they refuse
   a blocked start even from the `postgres` role, which skips row level
   security.
+
+Row level security depends on who is asking, but the task state rules don't,
+and agents often connect as a service rather than as a user, so rules that must
+hold whatever the identity belong in triggers or constraints.
 
 This transcript is from Claude Code working with the local stack
 (`supabase start`) through `psql`, as a demo user with three tasks. "Ship
