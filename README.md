@@ -182,6 +182,45 @@ update as `postgres` failed with the same `Blocked by` error. "Ship release"
 stayed To do every time. `supabase/tests/database/tasks.test.sql` checks the
 same refusal in CI.
 
+The same check against the hosted project went through MCP instead of `psql`:
+reads used the read-only `supabase` server, and only the start attempt used
+`supabase-write`. The read-only server has no signed-in user (`auth.uid()` is
+null and it can't switch to `authenticated`), so the query filters by owner
+itself:
+
+```text
+> What's blocking my next task?
+
+[supabase] with me as (select id from public.profiles where username = '<user>'),
+next_task as (
+  select t.id, t.title from public.tasks t, me
+  where t.owner_id = me.id and t.status = 'todo' order by t.created_at limit 1
+)
+select n.title as next_task, b.title as depends_on, b.status,
+       case when b.status <> 'done' then 'BLOCKING' else 'ok' end as verdict
+from next_task n
+join public.task_dependencies d on d.task_id = n.id
+join public.tasks b on b.id = d.depends_on_task_id
+order by verdict, b.title;
+  next_task   | depends_on  |   status    | verdict
+--------------+-------------+-------------+----------
+ Ship Release | Write Tests | in_progress | BLOCKING
+ Ship Release | Set Up CI   | done        | ok
+
+> Start "Ship Release".
+
+[supabase-write] update public.tasks set status = 'in_progress'
+where title = 'Ship Release' and owner_id = (...);
+ERROR:  23514: Blocked by "Write Tests"
+HINT:  Finish those tasks first.
+CONTEXT:  PL/pgSQL function public.enforce_task_status_gating() line 24 at RAISE
+
+[supabase] select title, status from public.tasks where title = 'Ship Release' ...;
+    title     | status
+--------------+--------
+ Ship Release | todo
+```
+
 ## Development
 
 ```bash
