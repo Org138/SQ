@@ -1,8 +1,7 @@
 # SQ
 [![CI](https://github.com/Org138/SQ/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Org138/SQ/actions/workflows/ci.yml)
 
-A Flutter + Supabase app: magic-link sign-in, a user profile with an avatar,
-and a task list where tasks can be blocked by other tasks.
+A Flutter + Supabase app: magic-link sign-in, a user profile with an avatar, and a task list where tasks can be blocked by other tasks.
 
 ## Getting Started
 
@@ -14,8 +13,7 @@ and a task list where tasks can be blocked by other tasks.
 
 ### 1. Set up the database
 
-The schema, row level security policies, triggers and the `avatars` storage
-bucket are all in `supabase/migrations`.
+The schema, row level security policies, triggers and the `avatars` storage bucket are all in `supabase/migrations`.
 
 Hosted project:
 
@@ -32,19 +30,13 @@ supabase start
 
 ### 2. Allow the sign-in redirect
 
-On Android and iOS the magic link opens the app through
-`io.supabase.sqproject://login-callback`. For a hosted project, add
-that URL under **Authentication → URL Configuration → Redirect URLs** in the
-dashboard. The local stack already allows it (`supabase/config.toml`).
+On Android and iOS the magic link opens the app through `io.supabase.sqproject://login-callback`. For a hosted project, add that URL under **Authentication → URL Configuration → Redirect URLs** in the dashboard. The local stack already allows it (`supabase/config.toml`).
 
-Web sign-in redirects to the project's Site URL, so set that to wherever you
-serve the web app.
+Web sign-in redirects to the project's Site URL, so set that to wherever you serve the web app.
 
 ### 3. Add your credentials
 
-Copy `supabase.example.json` to `supabase.json` (git-ignored) and fill in your
-project URL and anon or publishable key. Find them in the dashboard under
-**Project Settings → API**, or in the output of `supabase start`.
+Copy `supabase.example.json` to `supabase.json` (git-ignored) and fill in your project URL and anon or publishable key. Find them in the dashboard under **Project Settings → API**, or in the output of `supabase start`.
 
 ### 4. Run
 
@@ -52,12 +44,9 @@ project URL and anon or publishable key. Find them in the dashboard under
 flutter run --dart-define-from-file=supabase.json
 ```
 
-The app stops at startup with an error if `SUPABASE_URL` or
-`SUPABASE_ANON_KEY` is missing.
+The app stops at startup with an error if `SUPABASE_URL` or `SUPABASE_ANON_KEY` is missing.
 
-On web, the magic link always returns to the project's Site URL, but Flutter
-serves on a random port by default. Pin the port so it matches, for example
-for a Site URL of `http://localhost:3000`:
+On web, the magic link always returns to the project's Site URL, but Flutter serves on a random port by default. Pin the port so it matches, for example for a Site URL of `http://localhost:3000`:
 
 ```bash
 flutter run -d chrome --web-port 3000 --dart-define-from-file=supabase.json
@@ -65,21 +54,16 @@ flutter run -d chrome --web-port 3000 --dart-define-from-file=supabase.json
 
 ## How it works
 
-The Flutter app talks to Supabase directly with the anon or publishable key,
-so every rule lives in two places:
+The Flutter app talks to Supabase directly with the anon or publishable key, so every rule lives in two places:
 
-- **The app** checks first, to disable actions and explain why before you
-  try them.
-- **The database** enforces the same rules, so anyone calling the API
-  directly with the same key gets the same answer.
+- **The app** checks first, to disable actions and explain why before you   try them.
+- **The database** enforces the same rules, so anyone calling the API   directly with the same key gets the same answer.
 
-If the two ever disagree, for example because the data changed in another
-tab, the database wins. The app then shows the database's error message.
+If the two ever disagree, for example because the data changed in another tab, the database wins. The app then shows the database's error message.
 
 ### Tasks and dependencies
 
-A task can be blocked by other tasks (`task_dependencies`). A task is blocked
-while any task it depends on isn't done.
+A task can be blocked by other tasks (`task_dependencies`). A task is blocked while any task it depends on isn't done.
 
 | Rule | In the app (`lib/models/task.dart`) | In the database |
 | --- | --- | --- |
@@ -89,10 +73,7 @@ while any task it depends on isn't done.
 | No cycles (A blocked by B blocked by A) | The dependency dialog only lists tasks that wouldn't create one | `task_dependencies_prevent_cycle` trigger |
 | A task can't depend on itself | Not offered in the dialog | `check` constraint |
 
-The gating triggers lock the rows they check (`for share`), and the cycle
-check makes each user's dependency changes take turns (an advisory lock), so
-two changes made at the same moment can't both get past the same rule. They raise readable
-messages such as `Blocked by "Write tests"`, and the app shows those as is.
+The gating triggers lock the rows they check (`for share`), and the cycle check makes each user's dependency changes take turns (an advisory lock), so two changes made at the same moment can't both get past the same rule. They raise readable messages such as `Blocked by "Write tests"`, and the app shows those as is.
 
 ### Who can see and change what
 
@@ -213,8 +194,7 @@ flutter test
 
 The tests don't need a Supabase project: the tasks page tests run against a fake in-memory backend.
 
-The database tests in `supabase/tests/database` check the row level security policies, the task gating triggers and the avatar upload rules with
-[pgTAP](https://supabase.com/docs/guides/database/testing). They need the local stack, which needs Docker:
+The database tests in `supabase/tests/database` check the row level security policies, the task gating triggers and the avatar upload rules with [pgTAP](https://supabase.com/docs/guides/database/testing). They need the local stack, which needs Docker:
 
 ```bash
 supabase start
@@ -230,16 +210,12 @@ pgTAP runs in a single session, so one test that needs two sessions at once is a
 supabase/tests/concurrency/dependency_cycle_race.sh
 ```
 
-The browser tests in `e2e/` open the release web build in Chromium with
-[Playwright](https://playwright.dev):
+The browser tests in `e2e/` open the release web build in Chromium with [Playwright](https://playwright.dev):
 
 - **Sign in:** sends a magic link from the sign-in page.
-- **Task board:** starts signed in, creates two tasks, makes one depend on
-  the other, and checks that the blocked task's **Start** is disabled and
-  that no status change was sent.
+- **Task board:** starts signed in, creates two tasks, makes one depend on the other, and checks that the blocked task's **Start** is disabled and that no status change was sent.
 
-They don't need Supabase either: the tests answer the app's requests
-themselves and check what it sent. They need Node.js 18 or newer:
+They don't need Supabase either: the tests answer the app's requests themselves and check what it sent. They need Node.js 18 or newer:
 
 ```bash
 flutter build web --release --no-web-resources-cdn --dart-define=SUPABASE_URL=http://127.0.0.1:54321 --dart-define=SUPABASE_ANON_KEY=browser-test-key
@@ -249,16 +225,11 @@ flutter build web --release --no-web-resources-cdn --dart-define=SUPABASE_URL=ht
 cd e2e && npm ci && npx playwright install chromium && npx playwright test
 ```
 
-GitHub Actions runs all of these (`.github/workflows/ci.yml`) on every pull
-request and every push to `main`.
+GitHub Actions runs all of these (`.github/workflows/ci.yml`) on every pull request and every push to `main`.
 
 ## Supabase MCP server
 
-`.mcp.json` registers the Supabase MCP server for Claude Code in **read-only**
-mode with only the `database`, `docs`, `debugging` and `development` tools.
-Set `SUPABASE_PROJECT_REF` to your project ref before starting Claude Code.
-There is no fallback, so if it is unset Claude Code reports the missing
-variable instead of connecting to a placeholder project.
+`.mcp.json` registers the Supabase MCP server for Claude Code in **read-only** mode with only the `database`, `docs`, `debugging` and `development` tools. Set `SUPABASE_PROJECT_REF` to your project ref before starting Claude Code. There is no fallback, so if it is unset Claude Code reports the missing variable instead of connecting to a placeholder project.
 
 For write access, add a personal server that stays out of the repo:
 
