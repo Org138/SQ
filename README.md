@@ -73,7 +73,7 @@ A task can be blocked by other tasks (`task_dependencies`). A task is blocked wh
 | No cycles (A blocked by B blocked by A) | The dependency dialog only lists tasks that wouldn't create one | `task_dependencies_prevent_cycle` trigger |
 | A task can't depend on itself | Not offered in the dialog | `check` constraint |
 
-The gating triggers lock the rows they check (`for share`), and the cycle check makes each user's dependency changes take turns (an advisory lock), so two changes made at the same moment can't both get past the same rule. They raise readable messages such as `Blocked by "Write tests"`, and the app shows those as is.
+The gating triggers lock the rows they check (Postgres: `for share`), and the cycle check makes each user's dependency changes take turns (an advisory lock), so two changes made at the same moment can't both get past the same rule. They raise readable messages such as `Blocked by "Write tests"`, and the app shows those as is.
 
 ### Who can see and change what
 
