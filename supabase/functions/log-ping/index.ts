@@ -10,9 +10,9 @@ export default {
   }),
 };
 
-/* To invoke locally:
+/* To invoke locally, use the publishable key printed by `supabase status`:
 
   curl -i -X POST 'http://127.0.0.1:54321/functions/v1/log-ping' \
-    --header 'apikey: sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH'
+    --header 'apikey: <publishable key>'
 
 */
