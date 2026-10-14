@@ -8,7 +8,7 @@ on:
 jobs:
   flutter:
     name: Flutter analyze and test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
@@ -22,7 +22,7 @@ jobs:
 
   web:
     name: Browser test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: subosito/flutter-action@v2
@@ -54,7 +54,7 @@ jobs:
 
   database:
     name: Database tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
       - uses: supabase/setup-cli@v3
