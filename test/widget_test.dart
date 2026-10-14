@@ -43,11 +43,25 @@ class FakeBackend {
 
   final patches = <http.Request>[];
 
+  /// Number of reads, to check writes don't trigger a reload.
+  var gets = 0;
+
   /// When set, PATCH requests fail with this database error message.
   String? rejectPatchesWith;
 
   Future<http.Response> handle(http.Request request) async {
     final json = {'content-type': 'application/json'};
+
+    // Writes return the saved rows (`.select()`), as one object when the
+    // client asked for a single row (`.single()`).
+    http.Response rows(List<Map<String, dynamic>> rows) {
+      final single =
+          request.headers['Accept']?.contains('vnd.pgrst.object') ?? false;
+      return http.Response(jsonEncode(single ? rows.single : rows), 200,
+          headers: json, request: request);
+    }
+
+    if (request.method == 'GET') gets++;
     switch ((request.method, request.url.path)) {
       case ('GET', '/rest/v1/tasks'):
         return http.Response(jsonEncode(tasks), 200,
@@ -55,6 +69,24 @@ class FakeBackend {
       case ('GET', '/rest/v1/task_dependencies'):
         return http.Response(jsonEncode(dependencies), 200,
             headers: json, request: request);
+      case ('POST', '/rest/v1/tasks'):
+        final task = {
+          'id': 'new-${tasks.length}',
+          'description': null,
+          'status': 'todo',
+          'due_date': null,
+          ...jsonDecode(request.body) as Map<String, dynamic>,
+        };
+        tasks.add(task);
+        return rows([task]);
+      case ('DELETE', '/rest/v1/tasks'):
+        final id = request.url.queryParameters['id']!.replaceFirst('eq.', '');
+        tasks.removeWhere((t) => t['id'] == id);
+        dependencies.removeWhere(
+            (d) => d['task_id'] == id || d['depends_on_task_id'] == id);
+        return rows([
+          {'id': id}
+        ]);
       case ('PATCH', '/rest/v1/tasks'):
         patches.add(request);
         if (rejectPatchesWith != null) {
@@ -66,10 +98,9 @@ class FakeBackend {
           );
         }
         final id = request.url.queryParameters['id']!.replaceFirst('eq.', '');
-        tasks
-            .firstWhere((t) => t['id'] == id)
-            .addAll(jsonDecode(request.body) as Map<String, dynamic>);
-        return http.Response('', 204, request: request);
+        final task = tasks.firstWhere((t) => t['id'] == id)
+          ..addAll(jsonDecode(request.body) as Map<String, dynamic>);
+        return rows([task]);
     }
     return http.Response('Unexpected ${request.method} ${request.url}', 404,
         request: request);
@@ -180,6 +211,7 @@ void main() {
   testWidgets('finishing a dependency unblocks the tasks waiting on it',
       (tester) async {
     await pumpTasksPage(tester);
+    expect(backend.gets, 2);
     await openMenu(tester, 'B');
     await tester.tap(find.text('Mark done'));
     await tester.pumpAndSettle();
@@ -188,10 +220,40 @@ void main() {
     expect(patch.url.queryParameters['id'], 'eq.b');
     expect(jsonDecode(patch.body), {'status': 'done'});
 
-    // After reloading, A is no longer blocked.
+    // Updated from the returned row, without reloading: A is unblocked.
+    expect(backend.gets, 2);
     expect(find.text('Ready to start (1)'), findsOneWidget);
     expect(find.textContaining('Blocked'), findsNothing);
     expect(find.text('Depends on: B'), findsOneWidget);
+  });
+
+  testWidgets('deleting a task removes its links without reloading',
+      (tester) async {
+    await pumpTasksPage(tester);
+    await openMenu(tester, 'B');
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(TextButton, 'Delete'));
+    await tester.pumpAndSettle();
+
+    expect(backend.gets, 2);
+    expect(find.text('B'), findsNothing);
+    expect(find.text('Ready to start (1)'), findsOneWidget);
+    expect(find.textContaining('Depends on'), findsNothing);
+  });
+
+  testWidgets('a new task appears without reloading', (tester) async {
+    await pumpTasksPage(tester);
+    await tester.tap(find.byTooltip('New task'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.widgetWithText(TextField, 'Title'), 'D');
+    await tester.pump();
+    await tester.tap(find.text('Add'));
+    await tester.pumpAndSettle();
+
+    expect(backend.gets, 2);
+    expect(find.text('Ready to start (1)'), findsOneWidget);
+    expect(find.text('D'), findsOneWidget);
   });
 
   testWidgets('shows the database message when a gating trigger rejects',
