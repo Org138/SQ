@@ -112,6 +112,13 @@ test('a task blocked by an unfinished task cannot be started', async ({ page }) 
   const taskTile = (title: string) => app.getByRole('group', { name: new RegExp(`^${title}`) });
   const taskActions = (title: string) =>
     taskTile(title).getByRole('button', { name: 'Task actions' });
+  // Escape can arrive before a just-opened menu has keyboard focus, so press
+  // it until the menu is gone.
+  const closeMenu = () =>
+    expect(async () => {
+      await page.keyboard.press('Escape');
+      await expect(page.getByRole('menu')).toBeHidden({ timeout: 1000 });
+    }).toPass();
 
   for (const title of ['Write tests', 'Ship release']) {
     await page.getByRole('button', { name: 'New task' }).click();
@@ -136,12 +143,12 @@ test('a task blocked by an unfinished task cannot be started', async ({ page }) 
   const start = page.getByRole('menuitem', { name: /^Start/ });
   await expect(start).toBeDisabled();
   await expect(start).toHaveAccessibleName('Start Blocked by "Write tests"');
-  await page.keyboard.press('Escape');
+  await closeMenu();
 
   // The unblocked task can still be started.
   await taskActions('Write tests').click();
   await expect(page.getByRole('menuitem', { name: 'Start', exact: true })).toBeEnabled();
-  await page.keyboard.press('Escape');
+  await closeMenu();
 
   // Two tasks and one link were saved, and no status change was ever sent.
   expect(backend.writes).toEqual([
