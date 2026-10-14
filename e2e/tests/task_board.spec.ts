@@ -23,6 +23,7 @@ async function fakeBackend(page: Page) {
   const tasks: Task[] = [];
   const dependencies: Dependency[] = [];
   const writes: { method: string; table: string; body: unknown }[] = [];
+  const reads: string[] = [];
   const unexpected: string[] = [];
 
   await page.route(`${supabaseUrl}/**`, async (route: Route) => {
@@ -36,7 +37,14 @@ async function fakeBackend(page: Page) {
     const reply = (status: number, json?: unknown) =>
       route.fulfill({ status, headers: cors, json });
 
-    if (method !== 'GET') {
+    // Writes return the saved rows (`.select()`), as one object when the app
+    // asked for a single row (`.single()`).
+    const saved = (rows: unknown[]) =>
+      reply(201, request.headers()['accept']?.includes('vnd.pgrst.object') ? rows[0] : rows);
+
+    if (method === 'GET') {
+      reads.push(table);
+    } else {
       writes.push({ method, table, body: request.postDataJSON() });
     }
     if (method === 'GET' && table === 'profiles') return reply(200, []);
@@ -44,24 +52,26 @@ async function fakeBackend(page: Page) {
     if (method === 'GET' && table === 'task_dependencies') return reply(200, dependencies);
     if (method === 'POST' && table === 'tasks') {
       const row = request.postDataJSON();
-      tasks.push({
+      const task: Task = {
         id: `00000000-0000-4000-8000-1000000000${tasks.length + 10}`,
         title: row.title,
         description: null,
         status: 'todo',
         due_date: null,
-      });
-      return reply(201);
+      };
+      tasks.push(task);
+      return saved([task]);
     }
     if (method === 'POST' && table === 'task_dependencies') {
-      dependencies.push(...request.postDataJSON());
-      return reply(201);
+      const rows: Dependency[] = request.postDataJSON();
+      dependencies.push(...rows);
+      return saved(rows);
     }
     unexpected.push(`${method} ${url.pathname}${url.search}`);
     return reply(404, { message: 'Not handled by the test' });
   });
 
-  return { tasks, writes, unexpected };
+  return { tasks, writes, reads, unexpected };
 }
 
 /** A token the app accepts without checking: only the server verifies it. */
@@ -102,6 +112,13 @@ test('a task blocked by an unfinished task cannot be started', async ({ page }) 
   const taskTile = (title: string) => app.getByRole('group', { name: new RegExp(`^${title}`) });
   const taskActions = (title: string) =>
     taskTile(title).getByRole('button', { name: 'Task actions' });
+  // Escape can arrive before a just-opened menu has keyboard focus, so press
+  // it until the menu is gone.
+  const closeMenu = () =>
+    expect(async () => {
+      await page.keyboard.press('Escape');
+      await expect(page.getByRole('menu')).toBeHidden({ timeout: 1000 });
+    }).toPass();
 
   for (const title of ['Write tests', 'Ship release']) {
     await page.getByRole('button', { name: 'New task' }).click();
@@ -126,12 +143,12 @@ test('a task blocked by an unfinished task cannot be started', async ({ page }) 
   const start = page.getByRole('menuitem', { name: /^Start/ });
   await expect(start).toBeDisabled();
   await expect(start).toHaveAccessibleName('Start Blocked by "Write tests"');
-  await page.keyboard.press('Escape');
+  await closeMenu();
 
   // The unblocked task can still be started.
   await taskActions('Write tests').click();
   await expect(page.getByRole('menuitem', { name: 'Start', exact: true })).toBeEnabled();
-  await page.keyboard.press('Escape');
+  await closeMenu();
 
   // Two tasks and one link were saved, and no status change was ever sent.
   expect(backend.writes).toEqual([
@@ -143,5 +160,7 @@ test('a task blocked by an unfinished task cannot be started', async ({ page }) 
       body: [{ task_id: shipRelease.id, depends_on_task_id: writeTests.id }],
     },
   ]);
+  // The lists were loaded once; each write's result updated the board.
+  expect(backend.reads.filter((t) => t !== 'profiles')).toEqual(['tasks', 'task_dependencies']);
   expect(backend.unexpected).toEqual([]);
 });

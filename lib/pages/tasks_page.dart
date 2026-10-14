@@ -24,11 +24,11 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     try {
       final tasks = await supabase
           .from('tasks')
-          .select('id, title, description, status, due_date')
+          .select(_taskColumns)
           .order('created_at', ascending: true);
       final dependencies = await supabase
           .from('task_dependencies')
-          .select('task_id, depends_on_task_id');
+          .select(_dependencyColumns);
       _board = TaskBoard(
         tasks.map(Task.fromMap).toList(),
         dependencies.map(TaskDependency.fromMap).toList(),
@@ -42,17 +42,26 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     });
   }
 
-  /// Runs [write], then reloads. Shows the database's message if it fails
-  /// (e.g. a gating trigger rejected it). Returns whether it succeeded.
-  Future<bool> _write(Future<void> Function() write) async {
+  /// Runs [write] and updates the board from the rows it returns, so only
+  /// the changed rows are downloaded rather than every list again. Triggers
+  /// only modify the row being written, so the result matches a reload.
+  /// Shows the database's message if it fails (e.g. a gating trigger
+  /// rejected it). Returns whether it succeeded.
+  Future<bool> _write<T>(
+    Future<T> Function() write,
+    TaskBoard Function(TaskBoard board, T result) apply,
+  ) async {
+    final T result;
     try {
-      await write();
+      result = await write();
     } catch (error) {
       if (mounted) context.showErrorSnackBar(message: _errorMessage(error));
       return false;
     }
     if (!mounted) return false;
-    await _loadTasks();
+    setState(() {
+      _board = apply(_board, result);
+    });
     return true;
   }
 
@@ -62,9 +71,15 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       context.showErrorSnackBar(message: reason);
       return;
     }
-    await _write(() => supabase
-        .from('tasks')
-        .update({'status': status.dbValue}).eq('id', task.id));
+    await _write(
+      () => supabase
+          .from('tasks')
+          .update({'status': status.dbValue})
+          .eq('id', task.id)
+          .select(_taskColumns)
+          .single(),
+      (board, row) => board.withTask(Task.fromMap(row)),
+    );
   }
 
   Future<void> _createTask() async {
@@ -73,11 +88,20 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       builder: (_) => const _NewTaskDialog(),
     );
     if (result == null) return;
-    await _write(() => supabase.from('tasks').insert({
-          'title': result.title,
-          if (result.description.isNotEmpty) 'description': result.description,
-          if (result.dueDate != null) 'due_date': _formatDate(result.dueDate!),
-        }));
+    await _write(
+      () => supabase
+          .from('tasks')
+          .insert({
+            'title': result.title,
+            if (result.description.isNotEmpty)
+              'description': result.description,
+            if (result.dueDate != null)
+              'due_date': _formatDate(result.dueDate!),
+          })
+          .select(_taskColumns)
+          .single(),
+      (board, row) => board.withTask(Task.fromMap(row)),
+    );
   }
 
   Future<void> _deleteTask(Task task) async {
@@ -104,7 +128,12 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       ),
     );
     if (confirmed != true) return;
-    await _write(() => supabase.from('tasks').delete().eq('id', task.id));
+    // Only drop what the database says it deleted.
+    await _write(
+      () => supabase.from('tasks').delete().eq('id', task.id).select('id'),
+      (board, rows) => rows.fold(
+          board, (board, row) => board.withoutTask(row['id'] as String)),
+    );
   }
 
   Future<void> _editDependencies(Task task) async {
@@ -128,18 +157,30 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     if (added.isEmpty && removed.isEmpty) return;
 
     if (removed.isNotEmpty) {
-      final ok = await _write(() => supabase
-          .from('task_dependencies')
-          .delete()
-          .eq('task_id', task.id)
-          .inFilter('depends_on_task_id', removed.toList()));
+      final ok = await _write(
+        () => supabase
+            .from('task_dependencies')
+            .delete()
+            .eq('task_id', task.id)
+            .inFilter('depends_on_task_id', removed.toList())
+            .select(_dependencyColumns),
+        (board, rows) => board.withDependencies(
+            removed: rows.map(TaskDependency.fromMap)),
+      );
       if (!ok) return;
     }
     if (added.isNotEmpty) {
-      await _write(() => supabase.from('task_dependencies').insert([
-            for (final id in added)
-              {'task_id': task.id, 'depends_on_task_id': id}
-          ]));
+      await _write(
+        () => supabase
+            .from('task_dependencies')
+            .insert([
+              for (final id in added)
+                {'task_id': task.id, 'depends_on_task_id': id}
+            ])
+            .select(_dependencyColumns),
+        (board, rows) =>
+            board.withDependencies(added: rows.map(TaskDependency.fromMap)),
+      );
     }
   }
 
@@ -325,6 +366,9 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
 String _errorMessage(Object error) => error is PostgrestException
     ? error.message
     : "Couldn't reach the server. Check your connection and try again.";
+
+const _taskColumns = 'id, title, description, status, due_date';
+const _dependencyColumns = 'task_id, depends_on_task_id';
 
 /// Status actions share names with [TaskStatus] values.
 enum _TaskAction { todo, inProgress, done, dependencies, delete }

@@ -72,15 +72,54 @@ class TaskBoard {
           !_byId.containsKey(dep.dependsOnTaskId)) {
         continue;
       }
+      if (!(_dependsOn[dep.taskId] ?? const {}).contains(dep.dependsOnTaskId)) {
+        _dependencies.add(dep);
+      }
       _dependsOn.putIfAbsent(dep.taskId, () => {}).add(dep.dependsOnTaskId);
       _dependents.putIfAbsent(dep.dependsOnTaskId, () => {}).add(dep.taskId);
     }
   }
 
   final List<Task> tasks;
+  final _dependencies = <TaskDependency>[];
   final _byId = <String, Task>{};
   final _dependsOn = <String, Set<String>>{};
   final _dependents = <String, Set<String>>{};
+
+  /// The links between tasks on this board.
+  List<TaskDependency> get dependencies => List.unmodifiable(_dependencies);
+
+  /// A copy with [task] replacing the task with the same id, or added at the
+  /// end if it's new (the list is ordered by creation time).
+  TaskBoard withTask(Task task) {
+    final index = tasks.indexWhere((t) => t.id == task.id);
+    return TaskBoard(
+      index == -1 ? [...tasks, task] : ([...tasks]..[index] = task),
+      _dependencies,
+    );
+  }
+
+  /// A copy without the task [id] or any link touching it, mirroring the
+  /// `on delete cascade` foreign keys on `task_dependencies`.
+  TaskBoard withoutTask(String id) => TaskBoard(
+        tasks.where((t) => t.id != id).toList(),
+        _dependencies
+            .where((d) => d.taskId != id && d.dependsOnTaskId != id)
+            .toList(),
+      );
+
+  /// A copy with the [added] links and without the [removed] ones.
+  TaskBoard withDependencies({
+    Iterable<TaskDependency> added = const [],
+    Iterable<TaskDependency> removed = const [],
+  }) {
+    String key(TaskDependency d) => '${d.taskId}/${d.dependsOnTaskId}';
+    final removedKeys = removed.map(key).toSet();
+    return TaskBoard(tasks, [
+      ..._dependencies.where((d) => !removedKeys.contains(key(d))),
+      ...added,
+    ]);
+  }
 
   Task? byId(String id) => _byId[id];
 

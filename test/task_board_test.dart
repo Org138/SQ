@@ -83,6 +83,39 @@ void main() {
     });
   });
 
+  group('applying writes', () {
+    final board = TaskBoard(
+      [_task('a'), _task('b'), _task('c')],
+      const [TaskDependency('a', 'b'), TaskDependency('b', 'c')],
+    );
+
+    test('withTask replaces in place or appends', () {
+      final updated = board
+          .withTask(_task('b', TaskStatus.done))
+          .withTask(_task('d'));
+      expect(updated.tasks.map((t) => t.id), ['a', 'b', 'c', 'd']);
+      expect(updated.byId('b')!.status, TaskStatus.done);
+      expect(updated.dependencies, hasLength(2));
+    });
+
+    test('withoutTask drops links on both sides, like on delete cascade', () {
+      final updated = board.withoutTask('b');
+      expect(updated.tasks.map((t) => t.id), ['a', 'c']);
+      expect(updated.dependencies, isEmpty);
+      expect(updated.isBlocked(updated.byId('a')!), isFalse);
+    });
+
+    test('withDependencies adds and removes links', () {
+      final updated = board.withDependencies(
+        added: const [TaskDependency('a', 'c')],
+        removed: const [TaskDependency('a', 'b')],
+      );
+      expect(updated.dependenciesOf(updated.byId('a')!).map((t) => t.id),
+          ['c']);
+      expect(updated.dependentsOf(updated.byId('b')!), isEmpty);
+    });
+  });
+
   test('links to unknown tasks are ignored', () {
     final board = TaskBoard([_task('a')], const [TaskDependency('a', 'gone')]);
     expect(board.isBlocked(board.byId('a')!), isFalse);
