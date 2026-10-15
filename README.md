@@ -102,7 +102,7 @@ The rules live in the database, so an AI agent with database access gets the sam
 
 - **Reading as a user:** row level security limits the agent to that user's tasks only when it acts as that user, like the `psql` run below, which switches to the `authenticated` role with the user's JWT claims. Roles that skip row level security, such as `postgres`, `service_role` and the read-only MCP server's `supabase_read_only_user`, see every user's rows, so an agent using them has to filter by owner itself.
 - **Read-only access:** in a read-only session, like the one the read-only MCP server in `.mcp.json` uses, Postgres refuses every write.
-- **Writing:** the gating triggers don't check who is asking, so they refuse a blocked start even from the `postgres` role, which skips row level security.
+- **Writing:** the gating triggers don't check who is asking, so they refuse a blocked start even from the `postgres` role, which skips row level security. As the tables' owner, `postgres` can still disable or drop the triggers, so give agents that can write to the database a limited-scope role that isn’t the tables' owner or a member of it.
 
 Row level security depends on who is asking, but the task state rules don't, and agents often connect as a service rather than as a user, so rules that must hold whatever the identity belong in triggers or constraints.
 
