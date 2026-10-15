@@ -106,7 +106,7 @@ The rules live in the database, so an AI agent with database access gets the sam
 
 Row level security depends on who is asking, but the task state rules don't, and agents often connect as a service rather than as a user, so rules that must hold whatever the identity belong in triggers or constraints.
 
-This transcript is from Claude Code working with the local stack (`supabase start`) through `psql`, as a demo user with three tasks. "Ship release" depends on "Set up CI", which is done, and on "Write tests", which is in progress. It asks "What's blocking my next task?" in a read-only transaction, then tries to start the blocked task:
+The transcript below is from Claude Code working with the local stack (`supabase start`) through `psql`, as a demo user with three tasks. "Ship release" depends on "Set up CI", which is done, and on "Write tests", which is in progress. It asks "What's blocking my next task?" in a read-only transaction, then tries to start the blocked task:
 
 ```text
 > What's blocking my next task?
