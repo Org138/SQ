@@ -100,7 +100,7 @@ SVG and HTML are excluded on purpose: the bucket is public, and a file served wi
 
 The rules live in the database, so an AI agent with database access gets the same answers as the app:
 
-- **Reading as a user:** row level security limits the agent to that user's tasks, but only when it connects as that user, like the `psql` run below. Connected as a service, like the MCP servers, it sees every user's rows and has to filter by owner itself.
+- **Reading as a user:** row level security limits the agent to that user's tasks only when it acts as that user, like the `psql` run below, which switches to the `authenticated` role with the user's JWT claims. Roles that skip row level security, such as `postgres`, `service_role` and the read-only MCP server's `supabase_read_only_user`, see every user's rows, so an agent using them has to filter by owner itself.
 - **Read-only access:** in a read-only session, like the one the read-only MCP server in `.mcp.json` uses, Postgres refuses every write.
 - **Writing:** the gating triggers don't check who is asking, so they refuse a blocked start even from the `postgres` role, which skips row level security.
 
