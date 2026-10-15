@@ -183,7 +183,7 @@ CONTEXT:  PL/pgSQL function public.enforce_task_status_gating() line 24 at RAISE
 ```
 ### Log-ping for Edge Function Logs
 
-`supabase/functions/log-ping` writes one line, `log-ping: called`, to the project's Edge Function logs and returns `{"ok": true}`. It gives a quick check that functions are deployed and that their logs are being recorded. Callers must send the publishable or secret key in the `apikey` header.
+`supabase/functions/log-ping` writes one line, `log-ping: called`, to the project's Edge Function logs and returns `{"ok": true}`. It gives a quick check that the function is deployed and that Edge Function logs are being recorded. Callers must send the publishable or secret key in the `apikey` header.
 
 A `pg_cron` job calls it at 00:00 UTC on days 1, 6, 11, 16, 21, 26 and 31 of each month, so the runs are 1-5 days apart (`supabase/migrations/20261014222000_schedule_log_ping.sql`). The job runs inside Postgres, so it only fires while the project is running, and missed runs are skipped rather than caught up. It reads the project URL and key from the Vault secrets `project_url` and `publishable_key`. Where those aren't set, as on the local stack, it makes no request.
 
