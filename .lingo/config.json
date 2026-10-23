@@ -14,10 +14,10 @@
   "github": {
     "workflows": {
       "onPushToDefaultBranch": {
-        "enabled": true
+        "enabled": false
       },
       "onPullRequest": {
-        "enabled": true
+        "enabled": false
       }
     },
     "safety": {
