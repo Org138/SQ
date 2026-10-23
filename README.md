@@ -9,7 +9,9 @@ A Flutter + Supabase app: magic-link sign-in, a user profile with an avatar, and
 
 - [Flutter](https://docs.flutter.dev/get-started/install) (Dart 3)
 - A Supabase project, either hosted or local via the
-  [Supabase CLI](https://supabase.com/docs/guides/local-development)
+  [Supabase CLI](https://supabase.com/docs/guides/local-development).
+  CI pins the CLI version in `.github/workflows/ci.yml`; when you update
+  your local CLI, bump that version in the same PR so both test the same stack.
 
 ### 1. Set up the database
 
