@@ -3,7 +3,7 @@
 -- harden_task_trigger_functions migrations). Runs with `supabase test db`.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(18);
+select plan(19);
 
 -- Alice and Bob sign up; the on_auth_user_created trigger gives each a profile.
 insert into auth.users (id, email) values
@@ -26,6 +26,13 @@ select ok(
 select ok(
   not has_function_privilege('authenticated', 'public.check_task_dependency()', 'execute'),
   'check_task_dependency can''t be called through the API'
+);
+
+-- Volatile so the cycle check sees links committed while it waited for the
+-- advisory lock. Today stable would fail every link insert (its for share
+-- locks need volatile); without those locks it would quietly reopen the race.
+select volatility_is('public', 'check_task_dependency', '{}'::name[], 'volatile',
+  'check_task_dependency is volatile'
 );
 
 select ok(
