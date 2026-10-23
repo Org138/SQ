@@ -1,3 +1,5 @@
+// Messages, lists and board updates. Plain allow/deny cases live in the
+// shared fixture (see dependency_rules_test.dart).
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqproject/models/task.dart';
 
@@ -27,15 +29,6 @@ void main() {
       expect(board.statusChangeBlockedReason(a, TaskStatus.done), isNotNull);
       expect(board.statusChangeBlockedReason(a, TaskStatus.todo), isNull);
     });
-
-    test('unblocked task can start', () {
-      final board = TaskBoard([_task('a'), _task('b', TaskStatus.done)],
-          const [TaskDependency('a', 'b')]);
-      expect(
-          board.statusChangeBlockedReason(
-              board.byId('a')!, TaskStatus.inProgress),
-          isNull);
-    });
   });
 
   group('reopening', () {
@@ -46,15 +39,6 @@ void main() {
       );
       expect(board.statusChangeBlockedReason(board.byId('b')!, TaskStatus.todo),
           contains('"a"'));
-    });
-
-    test('done task can reopen while dependents are still todo', () {
-      final board = TaskBoard(
-        [_task('a'), _task('b', TaskStatus.done)],
-        const [TaskDependency('a', 'b')],
-      );
-      expect(board.statusChangeBlockedReason(board.byId('b')!, TaskStatus.todo),
-          isNull);
     });
   });
 

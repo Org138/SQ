@@ -210,6 +210,12 @@ supabase start
 supabase test db
 ```
 
+The dependency gating rules are enforced twice, in the app (`lib/models/task.dart`) and in the database triggers. To keep the two in step, the allow/deny cases live in one file, `supabase/tests/fixtures/dependency_rules.json`. `flutter test` runs them against the app's rules, and `supabase test db` runs them against the triggers through `dependency_rules.test.sql`. pgTAP can't read the fixture, so that file is generated from it; regenerate it after changing a case (CI fails if it's out of date):
+
+```bash
+dart run tool/generate_dependency_rules.dart
+```
+
 pgTAP runs in a single session, so one test that needs two sessions at once is a script instead. It adds A blocked by B and B blocked by A at the same moment and checks that the second is refused. It needs `psql`:
 
 ```bash
