@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/pages/tasks_page.dart';
 
 /// In-memory stand-in for the `tasks` and `task_dependencies` tables.
@@ -126,6 +127,8 @@ late FakeBackend backend;
 
 Future<void> pumpTasksPage(WidgetTester tester) async {
   await tester.pumpWidget(MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     home: const TasksPage(),
     routes: {'/login': (_) => const Scaffold(body: Text('login'))},
   ));

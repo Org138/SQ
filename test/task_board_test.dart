@@ -1,10 +1,14 @@
-// Messages, lists and board updates. Plain allow/deny cases live in the
+// Refusal reasons, lists and board updates. Plain allow/deny cases live in the
 // shared fixture (see dependency_rules_test.dart).
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqproject/models/task.dart';
 
 Task _task(String id, [TaskStatus status = TaskStatus.todo]) =>
     Task(id: id, title: id, status: status);
+
+/// A [T] refusal caused by the tasks [ids].
+Matcher _reason<T extends BlockedReason>(List<String> ids) =>
+    isA<T>().having((r) => r.tasks.map((t) => t.id), 'tasks', ids);
 
 void main() {
   group('blocking', () {
@@ -25,8 +29,9 @@ void main() {
           [_task('a'), _task('b')], const [TaskDependency('a', 'b')]);
       final a = board.byId('a')!;
       expect(board.statusChangeBlockedReason(a, TaskStatus.inProgress),
-          contains('"b"'));
-      expect(board.statusChangeBlockedReason(a, TaskStatus.done), isNotNull);
+          _reason<BlockedByDependencies>(['b']));
+      expect(board.statusChangeBlockedReason(a, TaskStatus.done),
+          _reason<BlockedByDependencies>(['b']));
       expect(board.statusChangeBlockedReason(a, TaskStatus.todo), isNull);
     });
   });
@@ -38,7 +43,7 @@ void main() {
         const [TaskDependency('a', 'b')],
       );
       expect(board.statusChangeBlockedReason(board.byId('b')!, TaskStatus.todo),
-          contains('"a"'));
+          _reason<DependentsStarted>(['a']));
     });
   });
 
@@ -62,7 +67,8 @@ void main() {
         _task('c', TaskStatus.done),
       ], const []);
       final a = board.byId('a')!;
-      expect(board.dependencyChangeBlockedReason(a, {'b'}), contains('"b"'));
+      expect(board.dependencyChangeBlockedReason(a, {'b'}),
+          _reason<DependenciesNotFinished>(['b']));
       expect(board.dependencyChangeBlockedReason(a, {'c'}), isNull);
     });
   });

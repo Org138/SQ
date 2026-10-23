@@ -1,0 +1,28 @@
+{
+  "engineId": "eng_TIiWCvipbbOmPJunPThH",
+  "sourceLocale": "en",
+  "targetLocales": [
+    "es",
+    "fr",
+    "de"
+  ],
+  "files": [
+    {
+      "pattern": "lib/l10n/app_en.arb"
+    }
+  ],
+  "github": {
+    "workflows": {
+      "onPushToDefaultBranch": {
+        "enabled": false
+      },
+      "onPullRequest": {
+        "enabled": false
+      }
+    },
+    "safety": {
+      "requireApproval": false
+    }
+  },
+  "orgId": "org_23xei089YlANrPUPo2M4"
+}

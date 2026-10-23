@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/pages/login_page.dart';
 
 /// PKCE storage kept in memory so tests don't need platform plugins.
@@ -26,7 +27,11 @@ class MemoryAsyncStorage extends GotrueAsyncStorage {
 final requests = <http.Request>[];
 
 Future<void> sendMagicLink(WidgetTester tester, String email) async {
-  await tester.pumpWidget(const MaterialApp(home: LoginPage()));
+  await tester.pumpWidget(const MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: LoginPage(),
+  ));
   await tester.enterText(find.byType(TextFormField), email);
   await tester.tap(find.text('Send Magic Link'));
   await tester.pumpAndSettle();

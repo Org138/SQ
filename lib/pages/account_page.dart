@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sqproject/components/auth_required_state.dart';
 import 'package:sqproject/components/avatar.dart';
+import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/utils/constants.dart';
 
 
@@ -47,6 +48,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
 
   /// Called when user taps `Update` button
   Future<void> _updateProfile() async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _loading = true;
     });
@@ -61,7 +63,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
     };
     try {
       await supabase.from('profiles').upsert(updates);
-      if (mounted) context.showSnackBar(message: 'Successfully updated profile!');
+      if (mounted) context.showSnackBar(message: l10n.profileUpdated);
     } on PostgrestException catch (error) {
       if (mounted) context.showErrorSnackBar(message: error.message);
     }
@@ -83,6 +85,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
 
   /// Called when image has been uploaded to Supabase storage from within Avatar widget
   Future<void> _onUpload(String imageUrl) async {
+    final l10n = AppLocalizations.of(context);
     try {
       await supabase.from('profiles').upsert({
         'id': _userId,
@@ -96,7 +99,7 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
     setState(() {
       _avatarUrl = imageUrl;
     });
-    context.showSnackBar(message: 'Updated your profile image!');
+    context.showSnackBar(message: l10n.avatarUpdated);
   }
 
   @override
@@ -114,8 +117,9 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
+      appBar: AppBar(title: Text(l10n.profileTitle)),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         children: [
@@ -126,23 +130,23 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
           const SizedBox(height: 18),
           TextFormField(
             controller: _usernameController,
-            decoration: const InputDecoration(labelText: 'User Name'),
+            decoration: InputDecoration(labelText: l10n.userNameLabel),
           ),
           const SizedBox(height: 18),
           TextFormField(
             controller: _websiteController,
-            decoration: const InputDecoration(labelText: 'Website' ),
+            decoration: InputDecoration(labelText: l10n.websiteLabel),
           ),
           const SizedBox(height: 18),
           ElevatedButton(
               onPressed: _loading ? null : _updateProfile,
-              child: Text(_loading ? 'Saving...' : 'Update')),
+              child: Text(_loading ? l10n.savingProfile : l10n.updateProfile)),
           const SizedBox(height: 18),
           ElevatedButton(
               onPressed: () => Navigator.of(context).pushNamed('/tasks'),
-              child: const Text('My Tasks')),
+              child: Text(l10n.myTasks)),
           const SizedBox(height: 18),
-          ElevatedButton(onPressed: _signOut, child: const Text('Sign Out')),
+          ElevatedButton(onPressed: _signOut, child: Text(l10n.signOut)),
         ],
       ),
     );

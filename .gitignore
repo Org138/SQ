@@ -48,6 +48,9 @@ app.*.map.json
 # Local Supabase credentials (see supabase.example.json)
 supabase.json
 
+# Local env vars. Never commit API keys such as LINGO_API_KEY
+.env
+
 # Claude Code: personal permissions, and skill links to absolute local paths
 .claude/settings.local.json
 .claude/skills/
