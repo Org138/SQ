@@ -1,0 +1,156 @@
+{
+  "@@locale": "en",
+
+  "signInTitle": "Sign In",
+  "signInPrompt": "Sign in via the magic link with your email below",
+  "emailLabel": "Email",
+  "emailRequired": "Enter your email address",
+  "sendMagicLink": "Send Magic Link",
+  "sendingMagicLink": "Loading",
+  "@sendingMagicLink": {
+    "description": "Sign-in button label while the magic link is being sent"
+  },
+  "magicLinkSent": "Check your email for login link!",
+
+  "profileTitle": "Profile",
+  "userNameLabel": "User Name",
+  "websiteLabel": "Website",
+  "updateProfile": "Update",
+  "@updateProfile": {
+    "description": "Button that saves the profile"
+  },
+  "savingProfile": "Saving...",
+  "profileUpdated": "Successfully updated profile!",
+  "avatarUpdated": "Updated your profile image!",
+  "myTasks": "My Tasks",
+  "@myTasks": {
+    "description": "Tasks page title and the profile button that opens it"
+  },
+  "signOut": "Sign Out",
+
+  "noAvatar": "No Image",
+  "@noAvatar": {
+    "description": "Placeholder shown when the user has no profile image"
+  },
+  "uploadAvatar": "Upload",
+  "avatarWrongType": "Use a JPEG, PNG or WebP image.",
+  "avatarTooLarge": "Images must be 1 MB or smaller.",
+
+  "refresh": "Refresh",
+  "newTask": "New task",
+  "@newTask": {
+    "description": "Add-task button tooltip and the add-task dialog title"
+  },
+  "noTasks": "No tasks yet. Tap + to add one, then link tasks that must be finished first.",
+  "sectionInProgress": "In progress ({count})",
+  "@sectionInProgress": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "sectionReady": "Ready to start ({count})",
+  "@sectionReady": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "sectionBlocked": "Blocked ({count})",
+  "@sectionBlocked": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "sectionDone": "Done ({count})",
+  "@sectionDone": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "taskDue": "Due {date}",
+  "@taskDue": {
+    "placeholders": {
+      "date": {"type": "DateTime", "format": "yMMMd"}
+    }
+  },
+  "waitingOn": "Waiting on: {titles}",
+  "@waitingOn": {
+    "description": "Unfinished tasks this task depends on",
+    "placeholders": {
+      "titles": {"type": "String", "example": "Write tests, Set up CI"}
+    }
+  },
+  "dependsOn": "Depends on: {titles}",
+  "@dependsOn": {
+    "placeholders": {
+      "titles": {"type": "String", "example": "Write tests, Set up CI"}
+    }
+  },
+  "taskActions": "Task actions",
+  "statusTodo": "To do",
+  "statusInProgress": "In progress",
+  "statusDone": "Done",
+  "moveToTodo": "Move back to To do",
+  "startTask": "Start",
+  "@startTask": {
+    "description": "Menu action that moves a task to In progress"
+  },
+  "markDone": "Mark done",
+  "editDependencies": "Edit dependencies…",
+  "deleteTask": "Delete",
+  "startedButBlocked": "Started, but a dependency is no longer done",
+
+  "deleteTaskTitle": "Delete \"{title}\"?",
+  "@deleteTaskTitle": {
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "deleteCannotUndo": "This can't be undone.",
+  "deleteAlsoUnlinks": "It will also be removed as a dependency from {titles}. This can't be undone.",
+  "@deleteAlsoUnlinks": {
+    "placeholders": {
+      "titles": {"type": "String", "example": "\"Ship release\", \"Write docs\""}
+    }
+  },
+  "cancel": "Cancel",
+
+  "taskTitleLabel": "Title",
+  "taskDescriptionLabel": "Description (optional)",
+  "noDueDate": "No due date",
+  "clearDueDate": "Clear due date",
+  "pickDueDate": "Pick date",
+  "addTask": "Add",
+
+  "dependenciesTitle": "\"{title}\" is blocked by",
+  "@dependenciesTitle": {
+    "description": "Title of the dialog that picks the tasks this task depends on",
+    "placeholders": {
+      "title": {"type": "String"}
+    }
+  },
+  "noDependencyCandidates": "No other tasks can be linked without creating a loop. Add more tasks first.",
+  "saveDependencies": "Save",
+
+  "blockedBy": "Blocked by {titles}",
+  "@blockedBy": {
+    "description": "Why a task can't start or finish. Matches the database trigger's message.",
+    "placeholders": {
+      "titles": {"type": "String", "example": "\"Write tests\""}
+    }
+  },
+  "cantReopen": "Can't reopen: {titles} already started",
+  "@cantReopen": {
+    "description": "Why a done task can't go back to To do. Matches the database trigger's message.",
+    "placeholders": {
+      "titles": {"type": "String", "example": "\"Ship release\""}
+    }
+  },
+  "dependenciesNotFinished": "\"{title}\" has already started, so it can only depend on finished tasks. Not finished: {titles}",
+  "@dependenciesNotFinished": {
+    "placeholders": {
+      "title": {"type": "String"},
+      "titles": {"type": "String", "example": "\"Write tests\""}
+    }
+  },
+  "offline": "Couldn't reach the server. Check your connection and try again."
+}

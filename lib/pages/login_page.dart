@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/utils/constants.dart';
 
 class LoginPage extends StatefulWidget {
@@ -21,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _signIn() async {
     // Without an email the auth server only answers with a 400.
     if (!_formKey.currentState!.validate()) return;
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _isLoading = true;
     });
@@ -31,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
             kIsWeb ? null : 'io.supabase.sqproject://login-callback',
       );
       if (mounted) {
-        context.showSnackBar(message: 'Check your email for login link!');
+        context.showSnackBar(message: l10n.magicLinkSent);
         _emailController.clear();
       }
     } on AuthException catch (error) {
@@ -73,27 +75,28 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign In')),
+      appBar: AppBar(title: Text(l10n.signInTitle)),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
           children: [
-            const Text('Sign in via the magic link with your email below'),
+            Text(l10n.signInPrompt),
             const SizedBox(height: 18),
             TextFormField(
               controller: _emailController,
-              decoration: const InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(labelText: l10n.emailLabel),
               keyboardType: TextInputType.emailAddress,
-              validator: (value) => (value ?? '').trim().isEmpty
-                  ? 'Enter your email address'
-                  : null,
+              validator: (value) =>
+                  (value ?? '').trim().isEmpty ? l10n.emailRequired : null,
             ),
             const SizedBox(height: 18),
             ElevatedButton(
                 onPressed: _isLoading ? null: _signIn,
-                child: Text(_isLoading ? 'Loading' : 'Send Magic Link'),
+                child: Text(
+                    _isLoading ? l10n.sendingMagicLink : l10n.sendMagicLink),
             ),
           ],
         ),

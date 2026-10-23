@@ -9,14 +9,13 @@
 library;
 
 enum TaskStatus {
-  todo('todo', 'To do'),
-  inProgress('in_progress', 'In progress'),
-  done('done', 'Done');
+  todo('todo'),
+  inProgress('in_progress'),
+  done('done');
 
-  const TaskStatus(this.dbValue, this.label);
+  const TaskStatus(this.dbValue);
 
   final String dbValue;
-  final String label;
 
   static TaskStatus fromDb(String value) =>
       TaskStatus.values.firstWhere((s) => s.dbValue == value);
@@ -153,21 +152,17 @@ class TaskBoard {
       tasks.where((t) => t.status == TaskStatus.done).toList();
 
   /// Why [task] can't move to [to], or null if it can.
-  String? statusChangeBlockedReason(Task task, TaskStatus to) {
+  BlockedReason? statusChangeBlockedReason(Task task, TaskStatus to) {
     if (to == task.status) return null;
     if (to != TaskStatus.todo) {
       final blockers = blockersOf(task);
-      if (blockers.isNotEmpty) {
-        return 'Blocked by ${_titles(blockers)}';
-      }
+      if (blockers.isNotEmpty) return BlockedByDependencies(blockers);
     }
     if (task.status == TaskStatus.done) {
       final started = dependentsOf(task)
           .where((t) => t.status != TaskStatus.todo)
           .toList();
-      if (started.isNotEmpty) {
-        return 'Can\'t reopen: ${_titles(started)} already started';
-      }
+      if (started.isNotEmpty) return DependentsStarted(started);
     }
     return null;
   }
@@ -177,15 +172,15 @@ class TaskBoard {
       tasks.where((t) => t.id != task.id && !_reaches(t.id, task.id)).toList();
 
   /// Why [task] can't have exactly [dependencyIds], or null if it can.
-  String? dependencyChangeBlockedReason(Task task, Set<String> dependencyIds) {
+  BlockedReason? dependencyChangeBlockedReason(
+      Task task, Set<String> dependencyIds) {
     if (task.status == TaskStatus.todo) return null;
     final unfinished = dependencyIds
         .map((id) => _byId[id]!)
         .where((t) => t.status != TaskStatus.done)
         .toList();
     if (unfinished.isEmpty) return null;
-    return '"${task.title}" has already started, so it can only depend on '
-        'finished tasks. Not finished: ${_titles(unfinished)}';
+    return DependenciesNotFinished(unfinished);
   }
 
   /// Whether [from] transitively depends on [to].
@@ -199,7 +194,30 @@ class TaskBoard {
     }
     return false;
   }
+}
 
-  static String _titles(List<Task> tasks) =>
-      tasks.map((t) => '"${t.title}"').join(', ');
+/// Why a status or dependency change is refused. The page words these for
+/// the user's locale; the database triggers refuse the same changes with
+/// the English wording.
+sealed class BlockedReason {
+  const BlockedReason(this.tasks);
+
+  /// The tasks that cause the refusal.
+  final List<Task> tasks;
+}
+
+/// [tasks] are unfinished dependencies, so the task can't start or finish.
+class BlockedByDependencies extends BlockedReason {
+  const BlockedByDependencies(super.tasks);
+}
+
+/// [tasks] depend on the task and have started, so it can't reopen.
+class DependentsStarted extends BlockedReason {
+  const DependentsStarted(super.tasks);
+}
+
+/// The task has started, so it can only depend on finished tasks, and
+/// [tasks] aren't finished.
+class DependenciesNotFinished extends BlockedReason {
+  const DependenciesNotFinished(super.tasks);
 }

@@ -1,0 +1,6 @@
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+# AppLocalizations.of(context) returns a non-null value (every MaterialApp
+# that shows these pages registers the delegates).
+nullable-getter: false

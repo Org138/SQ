@@ -1,0 +1,183 @@
+{
+  "@@locale": "es",
+  "signInTitle": "Iniciar sesión",
+  "signInPrompt": "Inicia sesión con un enlace mágico usando tu correo electrónico a continuación",
+  "emailLabel": "Correo electrónico",
+  "emailRequired": "Introduce tu dirección de correo electrónico",
+  "sendMagicLink": "Enviar enlace mágico",
+  "sendingMagicLink": "Cargando",
+  "@sendingMagicLink": {
+    "description": "Sign-in button label while the magic link is being sent"
+  },
+  "magicLinkSent": "¡Revisa tu correo electrónico para encontrar el enlace de acceso!",
+  "profileTitle": "Perfil",
+  "userNameLabel": "Nombre de usuario",
+  "websiteLabel": "Sitio web",
+  "updateProfile": "Actualizar",
+  "@updateProfile": {
+    "description": "Button that saves the profile"
+  },
+  "savingProfile": "Guardando...",
+  "profileUpdated": "¡Perfil actualizado correctamente!",
+  "avatarUpdated": "¡Se ha actualizado tu imagen de perfil!",
+  "myTasks": "Mis tareas",
+  "@myTasks": {
+    "description": "Tasks page title and the profile button that opens it"
+  },
+  "signOut": "Cerrar sesión",
+  "noAvatar": "Sin imagen",
+  "@noAvatar": {
+    "description": "Placeholder shown when the user has no profile image"
+  },
+  "uploadAvatar": "Subir",
+  "avatarWrongType": "Usa una imagen JPEG, PNG o WebP.",
+  "avatarTooLarge": "Las imágenes deben pesar 1 MB o menos.",
+  "refresh": "Actualizar",
+  "newTask": "Nueva tarea",
+  "@newTask": {
+    "description": "Add-task button tooltip and the add-task dialog title"
+  },
+  "noTasks": "Aún no hay tareas. Toca + para añadir una y luego vincula las tareas que deben terminarse antes.",
+  "sectionInProgress": "En curso ({count})",
+  "@sectionInProgress": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sectionReady": "Listas para empezar ({count})",
+  "@sectionReady": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sectionBlocked": "Bloqueadas ({count})",
+  "@sectionBlocked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sectionDone": "Hechas ({count})",
+  "@sectionDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "taskDue": "Vence el {date}",
+  "@taskDue": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "waitingOn": "A la espera de: {titles}",
+  "@waitingOn": {
+    "description": "Unfinished tasks this task depends on",
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "Write tests, Set up CI"
+      }
+    }
+  },
+  "dependsOn": "Depende de: {titles}",
+  "@dependsOn": {
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "Write tests, Set up CI"
+      }
+    }
+  },
+  "taskActions": "Acciones de la tarea",
+  "statusTodo": "Por hacer",
+  "statusInProgress": "En curso",
+  "statusDone": "Hecha",
+  "moveToTodo": "Volver a Por hacer",
+  "startTask": "Iniciar",
+  "@startTask": {
+    "description": "Menu action that moves a task to In progress"
+  },
+  "markDone": "Marcar como hecha",
+  "editDependencies": "Editar dependencias…",
+  "deleteTask": "Eliminar",
+  "startedButBlocked": "Iniciada, pero una dependencia ya no está terminada",
+  "deleteTaskTitle": "¿Eliminar \"{title}\"?",
+  "@deleteTaskTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteCannotUndo": "Esta acción no se puede deshacer.",
+  "deleteAlsoUnlinks": "También se quitará como dependencia de {titles}. Esta acción no se puede deshacer.",
+  "@deleteAlsoUnlinks": {
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "\"Ship release\", \"Write docs\""
+      }
+    }
+  },
+  "cancel": "Cancelar",
+  "taskTitleLabel": "Título",
+  "taskDescriptionLabel": "Descripción (opcional)",
+  "noDueDate": "Sin fecha de vencimiento",
+  "clearDueDate": "Borrar fecha de vencimiento",
+  "pickDueDate": "Elegir fecha",
+  "addTask": "Añadir",
+  "dependenciesTitle": "\"{title}\" está bloqueada por",
+  "@dependenciesTitle": {
+    "description": "Title of the dialog that picks the tasks this task depends on",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "noDependencyCandidates": "No se puede vincular ninguna otra tarea sin crear un bucle. Añade más tareas primero.",
+  "saveDependencies": "Guardar",
+  "blockedBy": "Bloqueada por {titles}",
+  "@blockedBy": {
+    "description": "Why a task can't start or finish. Matches the database trigger's message.",
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "\"Write tests\""
+      }
+    }
+  },
+  "cantReopen": "No se puede reabrir: {titles} ya ha empezado",
+  "@cantReopen": {
+    "description": "Why a done task can't go back to To do. Matches the database trigger's message.",
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "\"Ship release\""
+      }
+    }
+  },
+  "dependenciesNotFinished": "\"{title}\" ya ha empezado, por lo que solo puede depender de tareas terminadas. Sin terminar: {titles}",
+  "@dependenciesNotFinished": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "titles": {
+        "type": "String",
+        "example": "\"Write tests\""
+      }
+    }
+  },
+  "offline": "No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo."
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/utils/constants.dart';
 
 class Avatar extends StatefulWidget {
@@ -26,6 +27,7 @@ class _AvatarState extends State<Avatar> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       children: [
         if (widget.imageUrl == null)
@@ -33,8 +35,8 @@ class _AvatarState extends State<Avatar> {
             width: 150,
             height: 150,
             color: Colors.grey,
-            child: const Center(
-              child: Text('No Image'),
+            child: Center(
+              child: Text(l10n.noAvatar),
             ),
           )
         else
@@ -46,13 +48,14 @@ class _AvatarState extends State<Avatar> {
           ),
         ElevatedButton(
           onPressed: _isLoading ? null : _upload,
-          child: const Text('Upload'),
+          child: Text(l10n.uploadAvatar),
         ),
       ],
     );
   }
 
   Future<void> _upload() async {
+    final l10n = AppLocalizations.of(context);
     final picker = ImagePicker();
     final imageFile = await picker.pickImage(
       source: ImageSource.gallery,
@@ -76,14 +79,14 @@ class _AvatarState extends State<Avatar> {
     if (!_allowedTypes.contains(contentType) ||
         !_allowedExtensions.contains(fileExt)) {
       if (mounted) {
-        context.showErrorSnackBar(message: 'Use a JPEG, PNG or WebP image.');
+        context.showErrorSnackBar(message: l10n.avatarWrongType);
         setState(() => _isLoading = false);
       }
       return;
     }
     if (bytes.length > _maxBytes) {
       if (mounted) {
-        context.showErrorSnackBar(message: 'Images must be 1 MB or smaller.');
+        context.showErrorSnackBar(message: l10n.avatarTooLarge);
         setState(() => _isLoading = false);
       }
       return;

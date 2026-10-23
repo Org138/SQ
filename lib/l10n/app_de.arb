@@ -1,0 +1,183 @@
+{
+  "@@locale": "de",
+  "signInTitle": "Anmelden",
+  "signInPrompt": "Melde dich unten mit deiner E-Mail-Adresse über den Magic Link an",
+  "emailLabel": "E-Mail",
+  "emailRequired": "Gib deine E-Mail-Adresse ein",
+  "sendMagicLink": "Magic Link senden",
+  "sendingMagicLink": "Wird geladen",
+  "@sendingMagicLink": {
+    "description": "Sign-in button label while the magic link is being sent"
+  },
+  "magicLinkSent": "Prüfe dein E-Mail-Postfach auf den Anmeldelink!",
+  "profileTitle": "Profil",
+  "userNameLabel": "Benutzername",
+  "websiteLabel": "Website",
+  "updateProfile": "Aktualisieren",
+  "@updateProfile": {
+    "description": "Button that saves the profile"
+  },
+  "savingProfile": "Wird gespeichert …",
+  "profileUpdated": "Profil erfolgreich aktualisiert!",
+  "avatarUpdated": "Dein Profilbild wurde aktualisiert!",
+  "myTasks": "Meine Aufgaben",
+  "@myTasks": {
+    "description": "Tasks page title and the profile button that opens it"
+  },
+  "signOut": "Abmelden",
+  "noAvatar": "Kein Bild",
+  "@noAvatar": {
+    "description": "Placeholder shown when the user has no profile image"
+  },
+  "uploadAvatar": "Hochladen",
+  "avatarWrongType": "Verwende ein JPEG-, PNG- oder WebP-Bild.",
+  "avatarTooLarge": "Bilder dürfen höchstens 1 MB groß sein.",
+  "refresh": "Aktualisieren",
+  "newTask": "Neue Aufgabe",
+  "@newTask": {
+    "description": "Add-task button tooltip and the add-task dialog title"
+  },
+  "noTasks": "Noch keine Aufgaben. Tippe auf +, um eine hinzuzufügen, und verknüpfe dann Aufgaben, die zuerst erledigt werden müssen.",
+  "sectionInProgress": "In Bearbeitung ({count})",
+  "@sectionInProgress": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sectionReady": "Bereit zum Start ({count})",
+  "@sectionReady": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sectionBlocked": "Blockiert ({count})",
+  "@sectionBlocked": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "sectionDone": "Erledigt ({count})",
+  "@sectionDone": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "taskDue": "Fällig am {date}",
+  "@taskDue": {
+    "placeholders": {
+      "date": {
+        "type": "DateTime",
+        "format": "yMMMd"
+      }
+    }
+  },
+  "waitingOn": "Wartet auf: {titles}",
+  "@waitingOn": {
+    "description": "Unfinished tasks this task depends on",
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "Write tests, Set up CI"
+      }
+    }
+  },
+  "dependsOn": "Abhängig von: {titles}",
+  "@dependsOn": {
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "Write tests, Set up CI"
+      }
+    }
+  },
+  "taskActions": "Aufgabenaktionen",
+  "statusTodo": "Zu erledigen",
+  "statusInProgress": "In Bearbeitung",
+  "statusDone": "Erledigt",
+  "moveToTodo": "Zurück zu „Zu erledigen“ verschieben",
+  "startTask": "Starten",
+  "@startTask": {
+    "description": "Menu action that moves a task to In progress"
+  },
+  "markDone": "Als erledigt markieren",
+  "editDependencies": "Abhängigkeiten bearbeiten …",
+  "deleteTask": "Löschen",
+  "startedButBlocked": "Gestartet, aber eine Abhängigkeit ist nicht mehr erledigt",
+  "deleteTaskTitle": "„{title}“ löschen?",
+  "@deleteTaskTitle": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "deleteCannotUndo": "Dies kann nicht rückgängig gemacht werden.",
+  "deleteAlsoUnlinks": "Die Aufgabe wird außerdem als Abhängigkeit aus {titles} entfernt. Dies kann nicht rückgängig gemacht werden.",
+  "@deleteAlsoUnlinks": {
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "\"Ship release\", \"Write docs\""
+      }
+    }
+  },
+  "cancel": "Abbrechen",
+  "taskTitleLabel": "Titel",
+  "taskDescriptionLabel": "Beschreibung (optional)",
+  "noDueDate": "Kein Fälligkeitsdatum",
+  "clearDueDate": "Fälligkeitsdatum entfernen",
+  "pickDueDate": "Datum auswählen",
+  "addTask": "Hinzufügen",
+  "dependenciesTitle": "„{title}“ wird blockiert von",
+  "@dependenciesTitle": {
+    "description": "Title of the dialog that picks the tasks this task depends on",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "noDependencyCandidates": "Es können keine weiteren Aufgaben verknüpft werden, ohne eine Schleife zu erzeugen. Füge zuerst weitere Aufgaben hinzu.",
+  "saveDependencies": "Speichern",
+  "blockedBy": "Blockiert von {titles}",
+  "@blockedBy": {
+    "description": "Why a task can't start or finish. Matches the database trigger's message.",
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "\"Write tests\""
+      }
+    }
+  },
+  "cantReopen": "Kann nicht erneut geöffnet werden: {titles} bereits gestartet",
+  "@cantReopen": {
+    "description": "Why a done task can't go back to To do. Matches the database trigger's message.",
+    "placeholders": {
+      "titles": {
+        "type": "String",
+        "example": "\"Ship release\""
+      }
+    }
+  },
+  "dependenciesNotFinished": "„{title}“ wurde bereits gestartet und kann daher nur von erledigten Aufgaben abhängen. Nicht erledigt: {titles}",
+  "@dependenciesNotFinished": {
+    "placeholders": {
+      "title": {
+        "type": "String"
+      },
+      "titles": {
+        "type": "String",
+        "example": "\"Write tests\""
+      }
+    }
+  },
+  "offline": "Der Server ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut."
+}

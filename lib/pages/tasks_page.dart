@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sqproject/components/auth_required_state.dart';
+import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/models/task.dart';
 import 'package:sqproject/utils/constants.dart';
 
@@ -68,7 +69,8 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
   Future<void> _setStatus(Task task, TaskStatus status) async {
     final reason = _board.statusChangeBlockedReason(task, status);
     if (reason != null) {
-      context.showErrorSnackBar(message: reason);
+      context.showErrorSnackBar(
+          message: _reasonMessage(AppLocalizations.of(context), task, reason));
       return;
     }
     await _write(
@@ -108,24 +110,25 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     final dependents = _board.dependentsOf(task);
     final confirmed = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Delete "${task.title}"?'),
-        content: Text(dependents.isEmpty
-            ? 'This can\'t be undone.'
-            : 'It will also be removed as a dependency from '
-                '${dependents.map((t) => '"${t.title}"').join(', ')}. '
-                'This can\'t be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
+      builder: (context) {
+        final l10n = AppLocalizations.of(context);
+        return AlertDialog(
+          title: Text(l10n.deleteTaskTitle(task.title)),
+          content: Text(dependents.isEmpty
+              ? l10n.deleteCannotUndo
+              : l10n.deleteAlsoUnlinks(_titles(dependents))),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(l10n.cancel),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(l10n.deleteTask),
+            ),
+          ],
+        );
+      },
     );
     if (confirmed != true) return;
     // Only drop what the database says it deleted.
@@ -149,7 +152,8 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     if (selected == null || !mounted) return;
     final reason = _board.dependencyChangeBlockedReason(task, selected);
     if (reason != null) {
-      context.showErrorSnackBar(message: reason);
+      context.showErrorSnackBar(
+          message: _reasonMessage(AppLocalizations.of(context), task, reason));
       return;
     }
     final added = selected.difference(current);
@@ -191,19 +195,20 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Tasks'),
+        title: Text(l10n.myTasks),
         actions: [
           IconButton(
-            tooltip: 'Refresh',
+            tooltip: l10n.refresh,
             icon: const Icon(Icons.refresh),
             onPressed: _loading ? null : _loadTasks,
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        tooltip: 'New task',
+        tooltip: l10n.newTask,
         onPressed: _loading ? null : _createTask,
         child: const Icon(Icons.add),
       ),
@@ -212,18 +217,15 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
   }
 
   Widget _buildBody() {
+    final l10n = AppLocalizations.of(context);
     if (_loading && _board.tasks.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
     if (_board.tasks.isEmpty) {
-      return const Center(
+      return Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            'No tasks yet. Tap + to add one, then link tasks that must be '
-            'finished first.',
-            textAlign: TextAlign.center,
-          ),
+          padding: const EdgeInsets.all(24),
+          child: Text(l10n.noTasks, textAlign: TextAlign.center),
         ),
       );
     }
@@ -232,22 +234,23 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       child: ListView(
         padding: const EdgeInsets.only(bottom: 88),
         children: [
-          ..._section('In progress', _board.inProgress),
-          ..._section('Ready to start', _board.ready),
-          ..._section('Blocked', _board.blocked),
-          ..._section('Done', _board.done),
+          ..._section(l10n.sectionInProgress, _board.inProgress),
+          ..._section(l10n.sectionReady, _board.ready),
+          ..._section(l10n.sectionBlocked, _board.blocked),
+          ..._section(l10n.sectionDone, _board.done),
         ],
       ),
     );
   }
 
-  List<Widget> _section(String title, List<Task> tasks) {
+  /// [tasks] under a [header] that's given their count.
+  List<Widget> _section(String Function(int count) header, List<Task> tasks) {
     if (tasks.isEmpty) return const [];
     return [
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 4),
         child: Text(
-          '$title (${tasks.length})',
+          header(tasks.length),
           style: Theme.of(context).textTheme.titleSmall,
         ),
       ),
@@ -256,16 +259,17 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
   }
 
   Widget _taskTile(Task task) {
+    final l10n = AppLocalizations.of(context);
     final blockers = _board.blockersOf(task);
     final dependencies = _board.dependenciesOf(task);
     final details = <String>[
       if (task.description != null && task.description!.isNotEmpty)
         task.description!,
-      if (task.dueDate != null) 'Due ${_formatDate(task.dueDate!)}',
+      if (task.dueDate != null) l10n.taskDue(task.dueDate!),
       if (blockers.isNotEmpty)
-        'Waiting on: ${blockers.map((t) => t.title).join(', ')}'
+        l10n.waitingOn(blockers.map((t) => t.title).join(', '))
       else if (dependencies.isNotEmpty)
-        'Depends on: ${dependencies.map((t) => t.title).join(', ')}',
+        l10n.dependsOn(dependencies.map((t) => t.title).join(', ')),
     ];
 
     return ListTile(
@@ -279,20 +283,20 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
       subtitle: details.isEmpty ? null : Text(details.join('\n')),
       isThreeLine: details.length > 1,
       trailing: PopupMenuButton<_TaskAction>(
-        tooltip: 'Task actions',
+        tooltip: l10n.taskActions,
         onSelected: (action) => _onAction(task, action),
         itemBuilder: (_) => [
           for (final status in TaskStatus.values)
             if (status != task.status)
               _statusMenuItem(task, status),
           const PopupMenuDivider(),
-          const PopupMenuItem(
+          PopupMenuItem(
             value: _TaskAction.dependencies,
-            child: Text('Edit dependencies…'),
+            child: Text(l10n.editDependencies),
           ),
-          const PopupMenuItem(
+          PopupMenuItem(
             value: _TaskAction.delete,
-            child: Text('Delete'),
+            child: Text(l10n.deleteTask),
           ),
         ],
       ),
@@ -300,12 +304,13 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
   }
 
   PopupMenuItem<_TaskAction> _statusMenuItem(Task task, TaskStatus status) {
+    final l10n = AppLocalizations.of(context);
     final reason = _board.statusChangeBlockedReason(task, status);
-    final label = {
-      TaskStatus.todo: 'Move back to To do',
-      TaskStatus.inProgress: 'Start',
-      TaskStatus.done: 'Mark done',
-    }[status]!;
+    final label = switch (status) {
+      TaskStatus.todo => l10n.moveToTodo,
+      TaskStatus.inProgress => l10n.startTask,
+      TaskStatus.done => l10n.markDone,
+    };
     return PopupMenuItem(
       value: _TaskAction.values.byName(status.name),
       enabled: reason == null,
@@ -316,7 +321,8 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(label),
-                Text(reason, style: Theme.of(context).textTheme.bodySmall),
+                Text(_reasonMessage(l10n, task, reason),
+                    style: Theme.of(context).textTheme.bodySmall),
               ],
             ),
     );
@@ -328,9 +334,9 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
         return const Icon(Icons.check_circle, color: Colors.green);
       case TaskStatus.inProgress:
         return blocked
-            ? const Tooltip(
-                message: 'Started, but a dependency is no longer done',
-                child: Icon(Icons.warning_amber, color: Colors.orange),
+            ? Tooltip(
+                message: AppLocalizations.of(context).startedButBlocked,
+                child: const Icon(Icons.warning_amber, color: Colors.orange),
               )
             : const Icon(Icons.timelapse, color: Colors.lightBlue);
       case TaskStatus.todo:
@@ -359,13 +365,35 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
         break;
     }
   }
+
+  /// Database errors carry a readable message (including the gating
+  /// triggers', which are in English); anything else, such as being
+  /// offline, gets a generic one.
+  String _errorMessage(Object error) => error is PostgrestException
+      ? error.message
+      : AppLocalizations.of(context).offline;
 }
 
-/// Database errors carry a readable message (including the gating
-/// triggers'); anything else, such as being offline, gets a generic one.
-String _errorMessage(Object error) => error is PostgrestException
-    ? error.message
-    : "Couldn't reach the server. Check your connection and try again.";
+/// The message for [reason], which refused a change to [task].
+String _reasonMessage(
+        AppLocalizations l10n, Task task, BlockedReason reason) =>
+    switch (reason) {
+      BlockedByDependencies(:final tasks) => l10n.blockedBy(_titles(tasks)),
+      DependentsStarted(:final tasks) => l10n.cantReopen(_titles(tasks)),
+      DependenciesNotFinished(:final tasks) =>
+        l10n.dependenciesNotFinished(task.title, _titles(tasks)),
+    };
+
+/// Quoted task titles, listed the way the database triggers list them.
+String _titles(List<Task> tasks) =>
+    tasks.map((t) => '"${t.title}"').join(', ');
+
+String _statusLabel(AppLocalizations l10n, TaskStatus status) =>
+    switch (status) {
+      TaskStatus.todo => l10n.statusTodo,
+      TaskStatus.inProgress => l10n.statusInProgress,
+      TaskStatus.done => l10n.statusDone,
+    };
 
 const _taskColumns = 'id, title, description, status, due_date';
 const _dependencyColumns = 'task_id, depends_on_task_id';
@@ -373,6 +401,7 @@ const _dependencyColumns = 'task_id, depends_on_task_id';
 /// Status actions share names with [TaskStatus] values.
 enum _TaskAction { todo, inProgress, done, dependencies, delete }
 
+/// The `due_date` column's format. Shown dates use the locale's format.
 String _formatDate(DateTime date) =>
     '${date.year}-${date.month.toString().padLeft(2, '0')}-'
     '${date.day.toString().padLeft(2, '0')}';
@@ -428,22 +457,23 @@ class _NewTaskDialogState extends State<_NewTaskDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
-      title: const Text('New task'),
+      title: Text(l10n.newTask),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
             controller: _titleController,
             autofocus: true,
-            decoration: const InputDecoration(labelText: 'Title'),
+            decoration: InputDecoration(labelText: l10n.taskTitleLabel),
             onChanged: (_) => setState(() {}),
             onSubmitted: (_) => _submit(),
           ),
           TextField(
             controller: _descriptionController,
             decoration:
-                const InputDecoration(labelText: 'Description (optional)'),
+                InputDecoration(labelText: l10n.taskDescriptionLabel),
             maxLines: 3,
             minLines: 1,
           ),
@@ -452,12 +482,12 @@ class _NewTaskDialogState extends State<_NewTaskDialog> {
             children: [
               Expanded(
                 child: Text(_dueDate == null
-                    ? 'No due date'
-                    : 'Due ${_formatDate(_dueDate!)}'),
+                    ? l10n.noDueDate
+                    : l10n.taskDue(_dueDate!)),
               ),
               if (_dueDate != null)
                 IconButton(
-                  tooltip: 'Clear due date',
+                  tooltip: l10n.clearDueDate,
                   icon: const Icon(Icons.clear),
                   onPressed: () => setState(() {
                     _dueDate = null;
@@ -465,7 +495,7 @@ class _NewTaskDialogState extends State<_NewTaskDialog> {
                 ),
               TextButton(
                 onPressed: _pickDueDate,
-                child: const Text('Pick date'),
+                child: Text(l10n.pickDueDate),
               ),
             ],
           ),
@@ -474,11 +504,11 @@ class _NewTaskDialogState extends State<_NewTaskDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         TextButton(
           onPressed: _titleController.text.trim().isEmpty ? null : _submit,
-          child: const Text('Add'),
+          child: Text(l10n.addTask),
         ),
       ],
     );
@@ -505,13 +535,13 @@ class _DependenciesDialogState extends State<_DependenciesDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return AlertDialog(
-      title: Text('"${widget.task.title}" is blocked by'),
+      title: Text(l10n.dependenciesTitle(widget.task.title)),
       content: SizedBox(
         width: double.maxFinite,
         child: widget.candidates.isEmpty
-            ? const Text('No other tasks can be linked without creating a '
-                'loop. Add more tasks first.')
+            ? Text(l10n.noDependencyCandidates)
             : ListView(
                 shrinkWrap: true,
                 children: [
@@ -519,7 +549,7 @@ class _DependenciesDialogState extends State<_DependenciesDialog> {
                     CheckboxListTile(
                       value: _selected.contains(candidate.id),
                       title: Text(candidate.title),
-                      subtitle: Text(candidate.status.label),
+                      subtitle: Text(_statusLabel(l10n, candidate.status)),
                       onChanged: (checked) => setState(() {
                         if (checked == true) {
                           _selected.add(candidate.id);
@@ -534,11 +564,11 @@ class _DependenciesDialogState extends State<_DependenciesDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+          child: Text(l10n.cancel),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(_selected),
-          child: const Text('Save'),
+          child: Text(l10n.saveDependencies),
         ),
       ],
     );

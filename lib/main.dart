@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/pages/account_page.dart';
 import 'package:sqproject/pages/login_page.dart';
 import 'package:sqproject/pages/splash_page.dart';
@@ -39,6 +40,10 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
+      // Follows the device language when there's an ARB file for it in
+      // lib/l10n, otherwise falls back to English.
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
         '/': (_) => const SplashPage(),
