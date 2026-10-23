@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Two sessions link A -> B and B -> A at the same moment. The second must wait
 # for the first to commit and then be refused as a cycle (see the
-# lock_task_dependency_cycle_check migration). pgTAP runs in one session, so
+# combine_task_dependency_checks migration). pgTAP runs in one session, so
 # this needs two real connections. Run against the local stack:
 #
 #   supabase/tests/concurrency/dependency_cycle_race.sh
