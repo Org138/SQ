@@ -59,9 +59,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
+      # Same CLI version as local development: the CLI picks the Postgres,
+      # Auth and Storage image versions, so a mismatch tests a different stack.
+      # Bump it here in the same PR as a local `scoop update supabase`.
       - uses: supabase/setup-cli@v3
         with:
-          version: 2.109.1
+          version: 2.121.0
       # Applies supabase/migrations to a fresh local stack
       - run: supabase start
       - run: supabase test db
