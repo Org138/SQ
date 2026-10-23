@@ -4,8 +4,8 @@
 /// A task is blocked while any task it depends on is not done. These rules
 /// let the UI explain and disable blocked actions up front; the database
 /// enforces the same rules with triggers (see the
-/// enforce_task_dependency_gating migration), so direct API calls can't
-/// bypass them.
+/// enforce_task_dependency_gating and combine_task_dependency_checks
+/// migrations), so direct API calls can't bypass them.
 library;
 
 enum TaskStatus {
