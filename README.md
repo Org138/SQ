@@ -74,6 +74,7 @@ A task can be blocked by other tasks (`task_dependencies`). A task is blocked wh
 | A task that has started can only depend on finished tasks | Saving the dependency dialog is refused with an explanation | `task_dependencies_check` trigger |
 | No cycles (A blocked by B blocked by A) | The dependency dialog only lists tasks that wouldn't create one | `task_dependencies_check` trigger |
 | A task can't depend on itself | Not offered in the dialog | `task_dependencies_check` trigger (and a `check` constraint) |
+| Deleting a task removes its dependency links, so tasks it was blocking can start | The delete dialog names the tasks it will be removed from | `on delete cascade` on both `task_dependencies` foreign keys |
 
 The gating triggers lock the rows they check (Postgres: `for share`), and the cycle check makes each user's dependency changes take turns (an advisory lock), so two changes made at the same moment can't both get past the same rule. They raise readable messages such as `Blocked by "Write tests"`, and the app shows those as is.
 
