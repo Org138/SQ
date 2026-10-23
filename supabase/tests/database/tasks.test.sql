@@ -1,8 +1,9 @@
--- Row level security and dependency gating for tasks (see the create_tasks and
--- enforce_task_dependency_gating migrations). Runs with `supabase test db`.
+-- Row level security and dependency gating for tasks (see the create_tasks,
+-- enforce_task_dependency_gating and combine_task_dependency_checks
+-- migrations). Runs with `supabase test db`.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(14);
+select plan(15);
 
 -- Alice and Bob sign up; the on_auth_user_created trigger gives each a profile.
 insert into auth.users (id, email) values
@@ -20,6 +21,11 @@ select results_eq(
 select ok(
   not has_function_privilege('authenticated', 'public.handle_new_user()', 'execute'),
   'handle_new_user can''t be called through the API'
+);
+
+select ok(
+  not has_function_privilege('authenticated', 'public.check_task_dependency()', 'execute'),
+  'check_task_dependency can''t be called through the API'
 );
 
 -- Alice: "Build" is blocked by "Design". Bob has one task of his own.
@@ -58,14 +64,14 @@ select throws_ok(
 select throws_ok(
   $$ insert into public.task_dependencies (task_id, depends_on_task_id)
      values ('aaaaaaaa-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000001') $$,
-  'P0001', null,
+  '23514', 'A task can''t depend on itself',
   'a task can''t depend on itself'
 );
 
 select throws_ok(
   $$ insert into public.task_dependencies (task_id, depends_on_task_id)
      values ('aaaaaaaa-0000-0000-0000-000000000001', 'aaaaaaaa-0000-0000-0000-000000000002') $$,
-  'P0001', null,
+  '23514', 'Dependency would create a cycle: "Build" already depends on "Design"',
   'dependencies can''t form a cycle'
 );
 

@@ -69,9 +69,9 @@ A task can be blocked by other tasks (`task_dependencies`). A task is blocked wh
 | --- | --- | --- |
 | A blocked task can't be started or marked done | **Start** and **Mark done** are disabled in the task menu, with "Blocked by …" underneath | `tasks_enforce_status_gating` trigger |
 | A done task can't be reopened while a task that depends on it has started | **Move back to To do** is disabled, with "Can't reopen: …" | `tasks_enforce_status_gating` trigger |
-| A task that has started can only depend on finished tasks | Saving the dependency dialog is refused with an explanation | `task_dependencies_enforce_gating` trigger |
-| No cycles (A blocked by B blocked by A) | The dependency dialog only lists tasks that wouldn't create one | `task_dependencies_prevent_cycle` trigger |
-| A task can't depend on itself | Not offered in the dialog | `check` constraint |
+| A task that has started can only depend on finished tasks | Saving the dependency dialog is refused with an explanation | `task_dependencies_check` trigger |
+| No cycles (A blocked by B blocked by A) | The dependency dialog only lists tasks that wouldn't create one | `task_dependencies_check` trigger |
+| A task can't depend on itself | Not offered in the dialog | `task_dependencies_check` trigger (and a `check` constraint) |
 
 The gating triggers lock the rows they check (Postgres: `for share`), and the cycle check makes each user's dependency changes take turns (an advisory lock), so two changes made at the same moment can't both get past the same rule. They raise readable messages such as `Blocked by "Write tests"`, and the app shows those as is.
 
