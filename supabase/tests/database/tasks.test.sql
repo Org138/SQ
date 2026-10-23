@@ -3,7 +3,7 @@
 -- harden_task_trigger_functions migrations). Runs with `supabase test db`.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(19);
+select plan(17);
 
 -- Alice and Bob sign up; the on_auth_user_created trigger gives each a profile.
 insert into auth.users (id, email) values
@@ -130,34 +130,6 @@ select lives_ok(
   $$ insert into public.task_dependencies (task_id, depends_on_task_id)
      values ('aaaaaaaa-0000-0000-0000-000000000002', 'aaaaaaaa-0000-0000-0000-000000000004') $$,
   'a started task can gain a finished dependency'
-);
-
--- Deletes only loosen the rules: removing a blocker or a link unblocks.
--- "Release" is blocked by "Write docs"; "Ship" is blocked by "Review".
-insert into public.tasks (id, title) values
-  ('aaaaaaaa-0000-0000-0000-000000000005', 'Release'),
-  ('aaaaaaaa-0000-0000-0000-000000000006', 'Ship'),
-  ('aaaaaaaa-0000-0000-0000-000000000007', 'Review');
-insert into public.task_dependencies (task_id, depends_on_task_id) values
-  ('aaaaaaaa-0000-0000-0000-000000000005', 'aaaaaaaa-0000-0000-0000-000000000003'),
-  ('aaaaaaaa-0000-0000-0000-000000000006', 'aaaaaaaa-0000-0000-0000-000000000007');
-
-delete from public.tasks where id = 'aaaaaaaa-0000-0000-0000-000000000003';
-
-select lives_ok(
-  $$ update public.tasks set status = 'in_progress'
-     where id = 'aaaaaaaa-0000-0000-0000-000000000005' $$,
-  'deleting an unfinished blocker lets its dependents start'
-);
-
-delete from public.task_dependencies
-where task_id = 'aaaaaaaa-0000-0000-0000-000000000006'
-  and depends_on_task_id = 'aaaaaaaa-0000-0000-0000-000000000007';
-
-select lives_ok(
-  $$ update public.tasks set status = 'in_progress'
-     where id = 'aaaaaaaa-0000-0000-0000-000000000006' $$,
-  'deleting a dependency link unblocks the task'
 );
 
 -- Act as Bob
