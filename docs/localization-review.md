@@ -29,5 +29,7 @@ git diff <reviewed commit> -- lib/l10n/app_de.arb
 
 ## Open issues
 
-- **All locales:** "Magic Link" isn't translated consistently. es says
-  "enlace de inicio de sesión". To be settled with a glossary entry.
+- **All locales:** the translations still mix "magic link" and "sign-in
+  link". The English text now says "sign-in link" everywhere, and a Lingo.dev
+  glossary entry fixes each language's term (de "Anmeldelink", es "enlace de
+  inicio de sesión", fr "lien de connexion"). Check after the next run.

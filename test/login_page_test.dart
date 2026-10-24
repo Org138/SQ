@@ -33,7 +33,7 @@ Future<void> sendMagicLink(WidgetTester tester, String email) async {
     home: LoginPage(),
   ));
   await tester.enterText(find.byType(TextFormField), email);
-  await tester.tap(find.text('Send Magic Link'));
+  await tester.tap(find.text('Send sign-in link'));
   await tester.pumpAndSettle();
 }
 
@@ -74,6 +74,6 @@ void main() {
 
     expect(requests.single.url.path, '/auth/v1/otp');
     expect(requests.single.body, contains('"email":"alice@example.com"'));
-    expect(find.text('Check your email for login link!'), findsOneWidget);
+    expect(find.text('Check your email for a sign-in link.'), findsOneWidget);
   });
 }

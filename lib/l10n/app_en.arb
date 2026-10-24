@@ -2,15 +2,15 @@
   "@@locale": "en",
 
   "signInTitle": "Sign In",
-  "signInPrompt": "Sign in via the magic link with your email below",
+  "signInPrompt": "Sign in with a link sent to your email below",
   "emailLabel": "Email",
   "emailRequired": "Enter your email address",
-  "sendMagicLink": "Send Magic Link",
+  "sendMagicLink": "Send sign-in link",
   "sendingMagicLink": "Loading",
   "@sendingMagicLink": {
     "description": "Sign-in button label while the magic link is being sent"
   },
-  "magicLinkSent": "Check your email for login link!",
+  "magicLinkSent": "Check your email for a sign-in link.",
 
   "profileTitle": "Profile",
   "userNameLabel": "User Name",

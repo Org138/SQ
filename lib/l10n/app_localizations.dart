@@ -111,7 +111,7 @@ abstract class AppLocalizations {
   /// No description provided for @signInPrompt.
   ///
   /// In en, this message translates to:
-  /// **'Sign in via the magic link with your email below'**
+  /// **'Sign in with a link sent to your email below'**
   String get signInPrompt;
 
   /// No description provided for @emailLabel.
@@ -129,7 +129,7 @@ abstract class AppLocalizations {
   /// No description provided for @sendMagicLink.
   ///
   /// In en, this message translates to:
-  /// **'Send Magic Link'**
+  /// **'Send sign-in link'**
   String get sendMagicLink;
 
   /// Sign-in button label while the magic link is being sent
@@ -141,7 +141,7 @@ abstract class AppLocalizations {
   /// No description provided for @magicLinkSent.
   ///
   /// In en, this message translates to:
-  /// **'Check your email for login link!'**
+  /// **'Check your email for a sign-in link.'**
   String get magicLinkSent;
 
   /// No description provided for @profileTitle.

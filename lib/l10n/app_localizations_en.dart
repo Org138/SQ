@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInTitle => 'Sign In';
 
   @override
-  String get signInPrompt => 'Sign in via the magic link with your email below';
+  String get signInPrompt => 'Sign in with a link sent to your email below';
 
   @override
   String get emailLabel => 'Email';
@@ -21,13 +21,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailRequired => 'Enter your email address';
 
   @override
-  String get sendMagicLink => 'Send Magic Link';
+  String get sendMagicLink => 'Send sign-in link';
 
   @override
   String get sendingMagicLink => 'Loading';
 
   @override
-  String get magicLinkSent => 'Check your email for login link!';
+  String get magicLinkSent => 'Check your email for a sign-in link.';
 
   @override
   String get profileTitle => 'Profile';
