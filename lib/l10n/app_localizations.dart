@@ -132,10 +132,10 @@ abstract class AppLocalizations {
   /// **'Send sign-in link'**
   String get sendMagicLink;
 
-  /// Sign-in button label while the magic link is being sent
+  /// Replaces "Send sign-in link" on the button while the sign-in link is being sent
   ///
   /// In en, this message translates to:
-  /// **'Loading'**
+  /// **'Sending…'**
   String get sendingMagicLink;
 
   /// No description provided for @magicLinkSent.

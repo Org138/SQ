@@ -1,6 +1,8 @@
 // Widget tests for the sign-in page, run against a fake auth server
 // (no network).
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
@@ -26,6 +28,9 @@ class MemoryAsyncStorage extends GotrueAsyncStorage {
 
 final requests = <http.Request>[];
 
+/// When set, the fake auth server waits for it before answering.
+Completer<void>? holdReplies;
+
 Future<void> sendMagicLink(WidgetTester tester, String email) async {
   await tester.pumpWidget(const MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -46,6 +51,7 @@ void main() {
       publishableKey: 'test-key',
       httpClient: MockClient((request) async {
         requests.add(request);
+        await holdReplies?.future;
         return http.Response('{}', 200,
             headers: {'content-type': 'application/json'}, request: request);
       }),
@@ -58,7 +64,10 @@ void main() {
     );
   });
 
-  setUp(requests.clear);
+  setUp(() {
+    requests.clear();
+    holdReplies = null;
+  });
 
   for (final email in ['', '   ']) {
     testWidgets('a blank email ("$email") sends no request', (tester) async {
@@ -75,5 +84,20 @@ void main() {
     expect(requests.single.url.path, '/auth/v1/otp');
     expect(requests.single.body, contains('"email":"alice@example.com"'));
     expect(find.text('Check your email for a sign-in link.'), findsOneWidget);
+  });
+
+  testWidgets('the button says it is sending until the server answers',
+      (tester) async {
+    holdReplies = Completer();
+    await sendMagicLink(tester, 'alice@example.com');
+
+    final button = find.widgetWithText(ElevatedButton, 'Sending…');
+    expect(button, findsOneWidget);
+    expect(tester.widget<ElevatedButton>(button).onPressed, isNull);
+
+    holdReplies!.complete();
+    await tester.pumpAndSettle();
+    expect(find.widgetWithText(ElevatedButton, 'Send sign-in link'),
+        findsOneWidget);
   });
 }

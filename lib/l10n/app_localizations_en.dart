@@ -24,7 +24,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendMagicLink => 'Send sign-in link';
 
   @override
-  String get sendingMagicLink => 'Loading';
+  String get sendingMagicLink => 'Sending…';
 
   @override
   String get magicLinkSent => 'Check your email for a sign-in link.';

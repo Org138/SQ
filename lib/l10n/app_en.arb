@@ -6,9 +6,9 @@
   "emailLabel": "Email",
   "emailRequired": "Enter your email address",
   "sendMagicLink": "Send sign-in link",
-  "sendingMagicLink": "Loading",
+  "sendingMagicLink": "Sending…",
   "@sendingMagicLink": {
-    "description": "Sign-in button label while the magic link is being sent"
+    "description": "Replaces \"Send sign-in link\" on the button while the sign-in link is being sent"
   },
   "magicLinkSent": "Check your email for a sign-in link.",
 
