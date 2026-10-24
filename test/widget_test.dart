@@ -271,7 +271,7 @@ void main() {
     expect(backend.patches, hasLength(1));
     expect(
         find.text('Your tasks changed somewhere else, so that change isn\'t '
-            'allowed anymore. Refresh and try again.'),
+            'allowed anymore. Refresh the list and try again.'),
         findsOneWidget);
     expect(find.text('Done (1)'), findsOneWidget);
   });

@@ -220,7 +220,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get errorOutOfDate =>
-      'Vos tâches ont été modifiées ailleurs, cette modification n\'est donc plus autorisée. Actualisez la page et réessayez.';
+      'Vos tâches ont été modifiées ailleurs, cette modification n\'est donc plus autorisée. Actualisez la liste et réessayez.';
 
   @override
   String get errorPermissionDenied =>

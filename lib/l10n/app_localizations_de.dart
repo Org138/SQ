@@ -220,7 +220,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get errorOutOfDate =>
-      'Deine Aufgaben wurden woanders geändert, daher ist diese Änderung nicht mehr möglich. Aktualisiere und versuche es noch einmal.';
+      'Deine Aufgaben wurden woanders geändert, deshalb ist diese Änderung nicht mehr möglich. Aktualisiere die Liste und versuche es noch einmal.';
 
   @override
   String get errorPermissionDenied => 'Dafür hast du keine Berechtigung.';

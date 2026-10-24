@@ -181,9 +181,9 @@
   },
   "offline": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
   "errorUsernameTaken": "Ce nom d'utilisateur est déjà pris. Essayez-en un autre.",
-  "errorOutOfDate": "Vos tâches ont été modifiées ailleurs, cette modification n'est donc plus autorisée. Actualisez la page et réessayez.",
+  "errorOutOfDate": "Vos tâches ont été modifiées ailleurs, cette modification n'est donc plus autorisée. Actualisez la liste et réessayez.",
   "@errorOutOfDate": {
-    "description": "The server refused a task change because the list on screen was out of date"
+    "description": "The server refused a task change because the task list on screen was out of date. The Refresh button reloads the list."
   },
   "errorPermissionDenied": "Vous n'avez pas l'autorisation d'effectuer cette action.",
   "errorSessionExpired": "Votre session a expiré. Déconnectez-vous, puis reconnectez-vous.",

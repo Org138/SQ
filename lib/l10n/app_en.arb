@@ -154,9 +154,9 @@
   },
   "offline": "Couldn't reach the server. Check your connection and try again.",
   "errorUsernameTaken": "That user name is taken. Try another one.",
-  "errorOutOfDate": "Your tasks changed somewhere else, so that change isn't allowed anymore. Refresh and try again.",
+  "errorOutOfDate": "Your tasks changed somewhere else, so that change isn't allowed anymore. Refresh the list and try again.",
   "@errorOutOfDate": {
-    "description": "The server refused a task change because the list on screen was out of date"
+    "description": "The server refused a task change because the task list on screen was out of date. The Refresh button reloads the list."
   },
   "errorPermissionDenied": "You don't have permission to do that.",
   "errorSessionExpired": "Your session has expired. Sign out and sign in again.",

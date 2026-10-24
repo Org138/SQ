@@ -450,10 +450,10 @@ abstract class AppLocalizations {
   /// **'That user name is taken. Try another one.'**
   String get errorUsernameTaken;
 
-  /// The server refused a task change because the list on screen was out of date
+  /// The server refused a task change because the task list on screen was out of date. The Refresh button reloads the list.
   ///
   /// In en, this message translates to:
-  /// **'Your tasks changed somewhere else, so that change isn\'t allowed anymore. Refresh and try again.'**
+  /// **'Your tasks changed somewhere else, so that change isn\'t allowed anymore. Refresh the list and try again.'**
   String get errorOutOfDate;
 
   /// No description provided for @errorPermissionDenied.

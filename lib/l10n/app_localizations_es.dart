@@ -220,7 +220,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get errorOutOfDate =>
-      'Tus tareas cambiaron en otro lugar, así que ese cambio ya no se permite. Actualiza e inténtalo de nuevo.';
+      'Tus tareas han cambiado en otro lugar, así que este cambio ya no es posible. Actualiza la lista e inténtalo de nuevo.';
 
   @override
   String get errorPermissionDenied => 'No tienes permiso para hacer eso.';

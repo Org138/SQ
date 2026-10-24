@@ -29,11 +29,12 @@ git diff <reviewed commit> -- lib/l10n/app_de.arb
 
 ## Open issues
 
-- **fr:** `errorOutOfDate` says "Actualisez la page" (refresh the page), but
-  the app has no pages; the button it points to says "Actualiser". Fix it
-  through the English source or the glossary rather than by hand.
+None known. Resolved so far (checked by search, not by a fluent speaker):
 
-Resolved: "magic link" no longer appears in any translation. Since Lingo.dev
-run `lrg_avaYGGA0O0S59HA2L7DG`, each locale uses its glossary term for
-"sign-in link" (de "Anmeldelink", es "enlace de inicio de sesión", fr "lien
-de connexion"). This was checked by search, not by a fluent speaker.
+- "Magic link" no longer appears in any translation. Since Lingo.dev run
+  `lrg_avaYGGA0O0S59HA2L7DG`, each locale uses its glossary term for
+  "sign-in link" (de "Anmeldelink", es "enlace de inicio de sesión", fr
+  "lien de connexion").
+- French `errorOutOfDate` said "Actualisez la page", but the app has no
+  pages. The English now says "Refresh the list", and since run
+  `lrg_hEHIHZLuPgnAtfz2cozp` the French says "Actualisez la liste".
