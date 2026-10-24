@@ -242,6 +242,32 @@ cd e2e && npm ci && npx playwright install chromium && npx playwright test
 
 GitHub Actions runs all of these (`.github/workflows/ci.yml`) on every pull request and every push to `main`.
 
+## Localization
+
+The app is in English, German, Spanish and French. English is the source: its text is in `lib/l10n/app_en.arb`, and [Lingo.dev](https://lingo.dev) machine-translates it into `app_de.arb`, `app_es.arb` and `app_fr.arb`. `flutter gen-l10n` turns the ARB files into the committed `lib/l10n/app_localizations*.dart` files the pages use.
+
+To change or add text:
+
+1. Edit `app_en.arb` only. When the English alone doesn't say where the text appears, add an `@key` description.
+2. Translate the changes (this needs access to the Lingo.dev organization in `.lingo/config.json`):
+
+   ```bash
+   npx -y @lingo.dev/cli@1.17.1 push --wait
+   ```
+
+   `.lingo/lock.json` records what was last translated, so a run with no English changes translates nothing. Each run is billed, so put several text changes into one run.
+3. Regenerate the Dart files:
+
+   ```bash
+   flutter gen-l10n
+   ```
+
+4. Run `flutter test`, then commit the ARB files, `.lingo/lock.json` and the generated Dart files together.
+
+Translation runs are manual: the Lingo.dev GitHub workflows are turned off in `.lingo/config.json`. Until the next run, `test/l10n_arb_test.dart` fails for any translated file that is missing a key or changes a placeholder, and CI fails if the generated Dart files don't match the ARB files.
+
+Don't edit the translated ARB files by hand, because a later run can translate the key again and undo the edit. Fix wording through the English text or the Lingo.dev glossary and brand voice instead. [docs/localization.md](docs/localization.md) lists each language's form of address and fixed terms, and [docs/localization-review.md](docs/localization-review.md) records which languages a fluent speaker has checked.
+
 ## Supabase MCP server
 
 `.mcp.json` registers the Supabase MCP server for Claude Code in **read-only** mode with only the `database`, `docs`, `debugging` and `development` tools. Set `SUPABASE_PROJECT_REF` to your project ref before starting Claude Code. There is no fallback, so if it is unset Claude Code reports the missing variable instead of connecting to a placeholder project.
