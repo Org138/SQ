@@ -213,4 +213,29 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get offline =>
       'No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.';
+
+  @override
+  String get errorUsernameTaken => 'That user name is taken. Try another one.';
+
+  @override
+  String get errorOutOfDate =>
+      'Your tasks changed somewhere else, so that change isn\'t allowed anymore. Refresh and try again.';
+
+  @override
+  String get errorPermissionDenied => 'You don\'t have permission to do that.';
+
+  @override
+  String get errorSessionExpired =>
+      'Your session has expired. Sign out and sign in again.';
+
+  @override
+  String get errorLinkExpired =>
+      'That sign-in link has expired or was already used. Request a new one.';
+
+  @override
+  String get errorTooManyRequests =>
+      'Too many attempts. Wait a minute and try again.';
+
+  @override
+  String get errorInvalidEmail => 'That email address isn\'t valid.';
 }

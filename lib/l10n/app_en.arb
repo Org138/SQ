@@ -152,5 +152,15 @@
       "titles": {"type": "String", "example": "\"Write tests\""}
     }
   },
-  "offline": "Couldn't reach the server. Check your connection and try again."
+  "offline": "Couldn't reach the server. Check your connection and try again.",
+  "errorUsernameTaken": "That user name is taken. Try another one.",
+  "errorOutOfDate": "Your tasks changed somewhere else, so that change isn't allowed anymore. Refresh and try again.",
+  "@errorOutOfDate": {
+    "description": "The server refused a task change because the list on screen was out of date"
+  },
+  "errorPermissionDenied": "You don't have permission to do that.",
+  "errorSessionExpired": "Your session has expired. Sign out and sign in again.",
+  "errorLinkExpired": "That sign-in link has expired or was already used. Request a new one.",
+  "errorTooManyRequests": "Too many attempts. Wait a minute and try again.",
+  "errorInvalidEmail": "That email address isn't valid."
 }

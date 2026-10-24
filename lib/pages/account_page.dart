@@ -4,6 +4,7 @@ import 'package:sqproject/components/auth_required_state.dart';
 import 'package:sqproject/components/avatar.dart';
 import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/utils/constants.dart';
+import 'package:sqproject/utils/error_messages.dart';
 
 
 class AccountPage extends StatefulWidget {
@@ -38,7 +39,10 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
         _avatarUrl = data['avatar_url'] as String?;
       }
     } on PostgrestException catch (error) {
-      if (mounted) context.showErrorSnackBar(message: error.message);
+      if (mounted) {
+        context.showErrorSnackBar(
+            message: errorMessage(AppLocalizations.of(context), error));
+      }
     }
     if (!mounted) return;
     setState(() {
@@ -65,7 +69,9 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
       await supabase.from('profiles').upsert(updates);
       if (mounted) context.showSnackBar(message: l10n.profileUpdated);
     } on PostgrestException catch (error) {
-      if (mounted) context.showErrorSnackBar(message: error.message);
+      if (mounted) {
+        context.showErrorSnackBar(message: errorMessage(l10n, error));
+      }
     }
     if (!mounted) return;
     setState(() {
@@ -79,7 +85,10 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
     try {
       await supabase.auth.signOut();
     } on AuthException catch (error) {
-      if (mounted) context.showErrorSnackBar(message: error.message);
+      if (mounted) {
+        context.showErrorSnackBar(
+            message: errorMessage(AppLocalizations.of(context), error));
+      }
     }
   }
 
@@ -92,7 +101,9 @@ class _AccountPageState extends AuthRequiredState<AccountPage> {
         'avatar_url': imageUrl,
       });
     } on PostgrestException catch (error) {
-      if (mounted) context.showErrorSnackBar(message: error.message);
+      if (mounted) {
+        context.showErrorSnackBar(message: errorMessage(l10n, error));
+      }
       return;
     }
     if (!mounted) return;

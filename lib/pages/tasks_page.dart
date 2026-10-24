@@ -4,6 +4,7 @@ import 'package:sqproject/components/auth_required_state.dart';
 import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/models/task.dart';
 import 'package:sqproject/utils/constants.dart';
+import 'package:sqproject/utils/error_messages.dart';
 
 /// Lists the user's tasks grouped by state. A task can't be started or
 /// finished until everything it depends on is done.
@@ -35,7 +36,10 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
         dependencies.map(TaskDependency.fromMap).toList(),
       );
     } catch (error) {
-      if (mounted) context.showErrorSnackBar(message: _errorMessage(error));
+      if (mounted) {
+        context.showErrorSnackBar(
+            message: errorMessage(AppLocalizations.of(context), error));
+      }
     }
     if (!mounted) return;
     setState(() {
@@ -46,8 +50,8 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
   /// Runs [write] and updates the board from the rows it returns, so only
   /// the changed rows are downloaded rather than every list again. Triggers
   /// only modify the row being written, so the result matches a reload.
-  /// Shows the database's message if it fails (e.g. a gating trigger
-  /// rejected it). Returns whether it succeeded.
+  /// Shows an error message if it fails (e.g. a gating trigger rejected
+  /// it). Returns whether it succeeded.
   Future<bool> _write<T>(
     Future<T> Function() write,
     TaskBoard Function(TaskBoard board, T result) apply,
@@ -56,7 +60,10 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
     try {
       result = await write();
     } catch (error) {
-      if (mounted) context.showErrorSnackBar(message: _errorMessage(error));
+      if (mounted) {
+        context.showErrorSnackBar(
+            message: errorMessage(AppLocalizations.of(context), error));
+      }
       return false;
     }
     if (!mounted) return false;
@@ -365,13 +372,6 @@ class _TasksPageState extends AuthRequiredState<TasksPage> {
         break;
     }
   }
-
-  /// Database errors carry a readable message (including the gating
-  /// triggers', which are in English); anything else, such as being
-  /// offline, gets a generic one.
-  String _errorMessage(Object error) => error is PostgrestException
-      ? error.message
-      : AppLocalizations.of(context).offline;
 }
 
 /// The message for [reason], which refused a change to [task].

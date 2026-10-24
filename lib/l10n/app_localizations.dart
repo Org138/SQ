@@ -443,6 +443,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t reach the server. Check your connection and try again.'**
   String get offline;
+
+  /// No description provided for @errorUsernameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That user name is taken. Try another one.'**
+  String get errorUsernameTaken;
+
+  /// The server refused a task change because the list on screen was out of date
+  ///
+  /// In en, this message translates to:
+  /// **'Your tasks changed somewhere else, so that change isn\'t allowed anymore. Refresh and try again.'**
+  String get errorOutOfDate;
+
+  /// No description provided for @errorPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to do that.'**
+  String get errorPermissionDenied;
+
+  /// No description provided for @errorSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Sign out and sign in again.'**
+  String get errorSessionExpired;
+
+  /// No description provided for @errorLinkExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That sign-in link has expired or was already used. Request a new one.'**
+  String get errorLinkExpired;
+
+  /// No description provided for @errorTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Wait a minute and try again.'**
+  String get errorTooManyRequests;
+
+  /// No description provided for @errorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'That email address isn\'t valid.'**
+  String get errorInvalidEmail;
 }
 
 class _AppLocalizationsDelegate
