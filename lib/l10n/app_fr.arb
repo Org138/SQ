@@ -147,6 +147,15 @@
   },
   "noDependencyCandidates": "Aucune autre tâche ne peut être liée sans créer de boucle. Ajoutez d'abord d'autres tâches.",
   "saveDependencies": "Enregistrer",
+  "dependenciesSelected": "{count, plural, =0{Aucune tâche sélectionnée} one{{count} tâche sélectionnée} many{{count} de tâches sélectionnées} other{{count} tâches sélectionnées}}",
+  "@dependenciesSelected": {
+    "description": "How many tasks are checked in the dependencies dialog",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockedBy": "Bloquée par {titles}",
   "@blockedBy": {
     "description": "Why a task can't start or finish. Matches the database trigger's message.",

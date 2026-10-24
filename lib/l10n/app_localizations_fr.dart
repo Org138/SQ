@@ -196,6 +196,19 @@ class AppLocalizationsFr extends AppLocalizations {
   String get saveDependencies => 'Enregistrer';
 
   @override
+  String dependenciesSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tâches sélectionnées',
+      many: '$count de tâches sélectionnées',
+      one: '$count tâche sélectionnée',
+      zero: 'Aucune tâche sélectionnée',
+    );
+    return '$_temp0';
+  }
+
+  @override
   String blockedBy(String titles) {
     return 'Bloquée par $titles';
   }

@@ -420,6 +420,12 @@ abstract class AppLocalizations {
   /// **'Save'**
   String get saveDependencies;
 
+  /// How many tasks are checked in the dependencies dialog
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{No tasks selected} one{{count} task selected} other{{count} tasks selected}}'**
+  String dependenciesSelected(int count);
+
   /// Why a task can't start or finish. Matches the database trigger's message.
   ///
   /// In en, this message translates to:
