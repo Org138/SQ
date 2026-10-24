@@ -31,6 +31,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/coverage/
 
 # Web related
 
@@ -47,6 +48,7 @@ app.*.map.json
 
 # Local Supabase credentials (see supabase.example.json)
 supabase.json
+Project_Reference_ID.rtf
 
 # Local env vars. Never commit API keys such as LINGO_API_KEY
 .env
