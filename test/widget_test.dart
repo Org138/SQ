@@ -144,7 +144,7 @@ Future<void> openMenu(WidgetTester tester, String title) async {
   await tester.pumpAndSettle();
 }
 
-/// The menu item labelled [label] (menu items are typed by a private enum).
+/// The menu item labeled [label] (menu items are typed by a private enum).
 PopupMenuItem<dynamic> menuItem(String label) => find
     .ancestor(
       of: find.text(label),
