@@ -259,7 +259,8 @@ void main() {
     expect(find.text('D'), findsOneWidget);
   });
 
-  testWidgets('shows the database message when a gating trigger rejects',
+  // The app's own checks passed, so the board on screen was out of date.
+  testWidgets('says the tasks changed when a gating trigger rejects',
       (tester) async {
     backend.rejectPatchesWith = 'Can\'t reopen: "X" already started';
     await pumpTasksPage(tester);
@@ -268,7 +269,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(backend.patches, hasLength(1));
-    expect(find.text('Can\'t reopen: "X" already started'), findsOneWidget);
+    expect(
+        find.text('Your tasks changed somewhere else, so that change isn\'t '
+            'allowed anymore. Refresh the list and try again.'),
+        findsOneWidget);
     expect(find.text('Done (1)'), findsOneWidget);
   });
 }

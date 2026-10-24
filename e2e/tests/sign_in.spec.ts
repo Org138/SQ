@@ -27,11 +27,11 @@ test('sends a magic link from the sign-in page', async ({ page }) => {
   await expect(page.getByText('Sign In', { exact: true })).toBeVisible();
   await page.getByRole('textbox', { name: 'Email' }).click();
   await page.keyboard.type('alice@example.com');
-  await page.getByRole('button', { name: 'Send Magic Link' }).click();
+  await page.getByRole('button', { name: 'Send sign-in link' }).click();
 
   // Look in the page itself, not in the copy announced to screen readers.
   await expect(
-    page.locator('flt-semantics-host').getByText('Check your email for login link!'),
+    page.locator('flt-semantics-host').getByText('Check your email for a sign-in link.'),
   ).toBeVisible();
   expect(otpRequests).toEqual([
     expect.objectContaining({ email: 'alice@example.com' }),

@@ -111,7 +111,7 @@ abstract class AppLocalizations {
   /// No description provided for @signInPrompt.
   ///
   /// In en, this message translates to:
-  /// **'Sign in via the magic link with your email below'**
+  /// **'Sign in with a link sent to your email below'**
   String get signInPrompt;
 
   /// No description provided for @emailLabel.
@@ -129,19 +129,19 @@ abstract class AppLocalizations {
   /// No description provided for @sendMagicLink.
   ///
   /// In en, this message translates to:
-  /// **'Send Magic Link'**
+  /// **'Send sign-in link'**
   String get sendMagicLink;
 
-  /// Sign-in button label while the magic link is being sent
+  /// Replaces "Send sign-in link" on the button while the sign-in link is being sent
   ///
   /// In en, this message translates to:
-  /// **'Loading'**
+  /// **'Sending…'**
   String get sendingMagicLink;
 
   /// No description provided for @magicLinkSent.
   ///
   /// In en, this message translates to:
-  /// **'Check your email for login link!'**
+  /// **'Check your email for a sign-in link.'**
   String get magicLinkSent;
 
   /// No description provided for @profileTitle.
@@ -171,7 +171,7 @@ abstract class AppLocalizations {
   /// No description provided for @savingProfile.
   ///
   /// In en, this message translates to:
-  /// **'Saving...'**
+  /// **'Saving…'**
   String get savingProfile;
 
   /// No description provided for @profileUpdated.
@@ -443,6 +443,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Couldn\'t reach the server. Check your connection and try again.'**
   String get offline;
+
+  /// No description provided for @errorUsernameTaken.
+  ///
+  /// In en, this message translates to:
+  /// **'That user name is taken. Try another one.'**
+  String get errorUsernameTaken;
+
+  /// The server refused a task change because the task list on screen was out of date. The Refresh button reloads the list.
+  ///
+  /// In en, this message translates to:
+  /// **'Your tasks changed somewhere else, so that change isn\'t allowed anymore. Refresh the list and try again.'**
+  String get errorOutOfDate;
+
+  /// No description provided for @errorPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'You don\'t have permission to do that.'**
+  String get errorPermissionDenied;
+
+  /// No description provided for @errorSessionExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Your session has expired. Sign out and sign in again.'**
+  String get errorSessionExpired;
+
+  /// No description provided for @errorLinkExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'That sign-in link has expired or was already used. Request a new one.'**
+  String get errorLinkExpired;
+
+  /// No description provided for @errorTooManyRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Too many attempts. Wait a minute and try again.'**
+  String get errorTooManyRequests;
+
+  /// No description provided for @errorInvalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'That email address isn\'t valid.'**
+  String get errorInvalidEmail;
 }
 
 class _AppLocalizationsDelegate

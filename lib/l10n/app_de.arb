@@ -1,15 +1,15 @@
 {
   "@@locale": "de",
   "signInTitle": "Anmelden",
-  "signInPrompt": "Melde dich unten mit deiner E-Mail-Adresse über den Magic Link an",
+  "signInPrompt": "Melde dich unten mit einem Link an, den wir dir per E-Mail schicken",
   "emailLabel": "E-Mail",
   "emailRequired": "Gib deine E-Mail-Adresse ein",
-  "sendMagicLink": "Magic Link senden",
-  "sendingMagicLink": "Wird geladen",
+  "sendMagicLink": "Anmeldelink senden",
+  "sendingMagicLink": "Wird gesendet…",
   "@sendingMagicLink": {
-    "description": "Sign-in button label while the magic link is being sent"
+    "description": "Replaces \"Send sign-in link\" on the button while the sign-in link is being sent"
   },
-  "magicLinkSent": "Prüfe dein E-Mail-Postfach auf den Anmeldelink!",
+  "magicLinkSent": "Prüfe dein E-Mail-Postfach auf einen Anmeldelink.",
   "profileTitle": "Profil",
   "userNameLabel": "Benutzername",
   "websiteLabel": "Website",
@@ -17,7 +17,7 @@
   "@updateProfile": {
     "description": "Button that saves the profile"
   },
-  "savingProfile": "Wird gespeichert …",
+  "savingProfile": "Wird gespeichert…",
   "profileUpdated": "Profil erfolgreich aktualisiert!",
   "avatarUpdated": "Dein Profilbild wurde aktualisiert!",
   "myTasks": "Meine Aufgaben",
@@ -179,5 +179,15 @@
       }
     }
   },
-  "offline": "Der Server ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut."
+  "offline": "Der Server ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut.",
+  "errorUsernameTaken": "Dieser Benutzername ist schon vergeben. Probiere einen anderen.",
+  "errorOutOfDate": "Deine Aufgaben wurden woanders geändert, deshalb ist diese Änderung nicht mehr möglich. Aktualisiere die Liste und versuche es noch einmal.",
+  "@errorOutOfDate": {
+    "description": "The server refused a task change because the task list on screen was out of date. The Refresh button reloads the list."
+  },
+  "errorPermissionDenied": "Dafür hast du keine Berechtigung.",
+  "errorSessionExpired": "Deine Sitzung ist abgelaufen. Melde dich ab und wieder an.",
+  "errorLinkExpired": "Dieser Anmeldelink ist abgelaufen oder wurde schon verwendet. Fordere einen neuen an.",
+  "errorTooManyRequests": "Zu viele Versuche. Warte eine Minute und versuche es erneut.",
+  "errorInvalidEmail": "Diese E-Mail-Adresse ist ungültig."
 }

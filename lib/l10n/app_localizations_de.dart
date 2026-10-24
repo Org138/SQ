@@ -13,7 +13,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get signInPrompt =>
-      'Melde dich unten mit deiner E-Mail-Adresse über den Magic Link an';
+      'Melde dich unten mit einem Link an, den wir dir per E-Mail schicken';
 
   @override
   String get emailLabel => 'E-Mail';
@@ -22,13 +22,14 @@ class AppLocalizationsDe extends AppLocalizations {
   String get emailRequired => 'Gib deine E-Mail-Adresse ein';
 
   @override
-  String get sendMagicLink => 'Magic Link senden';
+  String get sendMagicLink => 'Anmeldelink senden';
 
   @override
-  String get sendingMagicLink => 'Wird geladen';
+  String get sendingMagicLink => 'Wird gesendet…';
 
   @override
-  String get magicLinkSent => 'Prüfe dein E-Mail-Postfach auf den Anmeldelink!';
+  String get magicLinkSent =>
+      'Prüfe dein E-Mail-Postfach auf einen Anmeldelink.';
 
   @override
   String get profileTitle => 'Profil';
@@ -43,7 +44,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get updateProfile => 'Aktualisieren';
 
   @override
-  String get savingProfile => 'Wird gespeichert …';
+  String get savingProfile => 'Wird gespeichert…';
 
   @override
   String get profileUpdated => 'Profil erfolgreich aktualisiert!';
@@ -212,4 +213,30 @@ class AppLocalizationsDe extends AppLocalizations {
   @override
   String get offline =>
       'Der Server ist nicht erreichbar. Prüfe deine Verbindung und versuche es erneut.';
+
+  @override
+  String get errorUsernameTaken =>
+      'Dieser Benutzername ist schon vergeben. Probiere einen anderen.';
+
+  @override
+  String get errorOutOfDate =>
+      'Deine Aufgaben wurden woanders geändert, deshalb ist diese Änderung nicht mehr möglich. Aktualisiere die Liste und versuche es noch einmal.';
+
+  @override
+  String get errorPermissionDenied => 'Dafür hast du keine Berechtigung.';
+
+  @override
+  String get errorSessionExpired =>
+      'Deine Sitzung ist abgelaufen. Melde dich ab und wieder an.';
+
+  @override
+  String get errorLinkExpired =>
+      'Dieser Anmeldelink ist abgelaufen oder wurde schon verwendet. Fordere einen neuen an.';
+
+  @override
+  String get errorTooManyRequests =>
+      'Zu viele Versuche. Warte eine Minute und versuche es erneut.';
+
+  @override
+  String get errorInvalidEmail => 'Diese E-Mail-Adresse ist ungültig.';
 }

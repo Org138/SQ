@@ -12,7 +12,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInTitle => 'Sign In';
 
   @override
-  String get signInPrompt => 'Sign in via the magic link with your email below';
+  String get signInPrompt => 'Sign in with a link sent to your email below';
 
   @override
   String get emailLabel => 'Email';
@@ -21,13 +21,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailRequired => 'Enter your email address';
 
   @override
-  String get sendMagicLink => 'Send Magic Link';
+  String get sendMagicLink => 'Send sign-in link';
 
   @override
-  String get sendingMagicLink => 'Loading';
+  String get sendingMagicLink => 'Sending…';
 
   @override
-  String get magicLinkSent => 'Check your email for login link!';
+  String get magicLinkSent => 'Check your email for a sign-in link.';
 
   @override
   String get profileTitle => 'Profile';
@@ -42,7 +42,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateProfile => 'Update';
 
   @override
-  String get savingProfile => 'Saving...';
+  String get savingProfile => 'Saving…';
 
   @override
   String get profileUpdated => 'Successfully updated profile!';
@@ -210,4 +210,29 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get offline =>
       'Couldn\'t reach the server. Check your connection and try again.';
+
+  @override
+  String get errorUsernameTaken => 'That user name is taken. Try another one.';
+
+  @override
+  String get errorOutOfDate =>
+      'Your tasks changed somewhere else, so that change isn\'t allowed anymore. Refresh the list and try again.';
+
+  @override
+  String get errorPermissionDenied => 'You don\'t have permission to do that.';
+
+  @override
+  String get errorSessionExpired =>
+      'Your session has expired. Sign out and sign in again.';
+
+  @override
+  String get errorLinkExpired =>
+      'That sign-in link has expired or was already used. Request a new one.';
+
+  @override
+  String get errorTooManyRequests =>
+      'Too many attempts. Wait a minute and try again.';
+
+  @override
+  String get errorInvalidEmail => 'That email address isn\'t valid.';
 }

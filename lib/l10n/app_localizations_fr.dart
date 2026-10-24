@@ -13,7 +13,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get signInPrompt =>
-      'Connectez-vous via le lien magique en saisissant votre adresse e-mail ci-dessous';
+      'Connectez-vous avec un lien envoyé à votre adresse e-mail ci-dessous';
 
   @override
   String get emailLabel => 'E-mail';
@@ -22,14 +22,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get emailRequired => 'Saisissez votre adresse e-mail';
 
   @override
-  String get sendMagicLink => 'Envoyer le lien magique';
+  String get sendMagicLink => 'Envoyer le lien de connexion';
 
   @override
-  String get sendingMagicLink => 'Chargement';
+  String get sendingMagicLink => 'Envoi en cours…';
 
   @override
   String get magicLinkSent =>
-      'Consultez votre messagerie pour trouver le lien de connexion !';
+      'Consultez votre boîte mail : un lien de connexion vous a été envoyé.';
 
   @override
   String get profileTitle => 'Profil';
@@ -213,4 +213,31 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get offline =>
       'Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.';
+
+  @override
+  String get errorUsernameTaken =>
+      'Ce nom d\'utilisateur est déjà pris. Essayez-en un autre.';
+
+  @override
+  String get errorOutOfDate =>
+      'Vos tâches ont été modifiées ailleurs, cette modification n\'est donc plus autorisée. Actualisez la liste et réessayez.';
+
+  @override
+  String get errorPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation d\'effectuer cette action.';
+
+  @override
+  String get errorSessionExpired =>
+      'Votre session a expiré. Déconnectez-vous, puis reconnectez-vous.';
+
+  @override
+  String get errorLinkExpired =>
+      'Ce lien de connexion a expiré ou a déjà été utilisé. Demandez-en un nouveau.';
+
+  @override
+  String get errorTooManyRequests =>
+      'Trop de tentatives. Patientez une minute, puis réessayez.';
+
+  @override
+  String get errorInvalidEmail => 'Cette adresse e-mail n\'est pas valide.';
 }

@@ -1,15 +1,15 @@
 {
   "@@locale": "fr",
   "signInTitle": "Connexion",
-  "signInPrompt": "Connectez-vous via le lien magique en saisissant votre adresse e-mail ci-dessous",
+  "signInPrompt": "Connectez-vous avec un lien envoyé à votre adresse e-mail ci-dessous",
   "emailLabel": "E-mail",
   "emailRequired": "Saisissez votre adresse e-mail",
-  "sendMagicLink": "Envoyer le lien magique",
-  "sendingMagicLink": "Chargement",
+  "sendMagicLink": "Envoyer le lien de connexion",
+  "sendingMagicLink": "Envoi en cours…",
   "@sendingMagicLink": {
-    "description": "Sign-in button label while the magic link is being sent"
+    "description": "Replaces \"Send sign-in link\" on the button while the sign-in link is being sent"
   },
-  "magicLinkSent": "Consultez votre messagerie pour trouver le lien de connexion !",
+  "magicLinkSent": "Consultez votre boîte mail : un lien de connexion vous a été envoyé.",
   "profileTitle": "Profil",
   "userNameLabel": "Nom d'utilisateur",
   "websiteLabel": "Site web",
@@ -179,5 +179,15 @@
       }
     }
   },
-  "offline": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez."
+  "offline": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
+  "errorUsernameTaken": "Ce nom d'utilisateur est déjà pris. Essayez-en un autre.",
+  "errorOutOfDate": "Vos tâches ont été modifiées ailleurs, cette modification n'est donc plus autorisée. Actualisez la liste et réessayez.",
+  "@errorOutOfDate": {
+    "description": "The server refused a task change because the task list on screen was out of date. The Refresh button reloads the list."
+  },
+  "errorPermissionDenied": "Vous n'avez pas l'autorisation d'effectuer cette action.",
+  "errorSessionExpired": "Votre session a expiré. Déconnectez-vous, puis reconnectez-vous.",
+  "errorLinkExpired": "Ce lien de connexion a expiré ou a déjà été utilisé. Demandez-en un nouveau.",
+  "errorTooManyRequests": "Trop de tentatives. Patientez une minute, puis réessayez.",
+  "errorInvalidEmail": "Cette adresse e-mail n'est pas valide."
 }

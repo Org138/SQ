@@ -2,15 +2,15 @@
   "@@locale": "en",
 
   "signInTitle": "Sign In",
-  "signInPrompt": "Sign in via the magic link with your email below",
+  "signInPrompt": "Sign in with a link sent to your email below",
   "emailLabel": "Email",
   "emailRequired": "Enter your email address",
-  "sendMagicLink": "Send Magic Link",
-  "sendingMagicLink": "Loading",
+  "sendMagicLink": "Send sign-in link",
+  "sendingMagicLink": "Sending…",
   "@sendingMagicLink": {
-    "description": "Sign-in button label while the magic link is being sent"
+    "description": "Replaces \"Send sign-in link\" on the button while the sign-in link is being sent"
   },
-  "magicLinkSent": "Check your email for login link!",
+  "magicLinkSent": "Check your email for a sign-in link.",
 
   "profileTitle": "Profile",
   "userNameLabel": "User Name",
@@ -19,7 +19,7 @@
   "@updateProfile": {
     "description": "Button that saves the profile"
   },
-  "savingProfile": "Saving...",
+  "savingProfile": "Saving…",
   "profileUpdated": "Successfully updated profile!",
   "avatarUpdated": "Updated your profile image!",
   "myTasks": "My Tasks",
@@ -152,5 +152,15 @@
       "titles": {"type": "String", "example": "\"Write tests\""}
     }
   },
-  "offline": "Couldn't reach the server. Check your connection and try again."
+  "offline": "Couldn't reach the server. Check your connection and try again.",
+  "errorUsernameTaken": "That user name is taken. Try another one.",
+  "errorOutOfDate": "Your tasks changed somewhere else, so that change isn't allowed anymore. Refresh the list and try again.",
+  "@errorOutOfDate": {
+    "description": "The server refused a task change because the task list on screen was out of date. The Refresh button reloads the list."
+  },
+  "errorPermissionDenied": "You don't have permission to do that.",
+  "errorSessionExpired": "Your session has expired. Sign out and sign in again.",
+  "errorLinkExpired": "That sign-in link has expired or was already used. Request a new one.",
+  "errorTooManyRequests": "Too many attempts. Wait a minute and try again.",
+  "errorInvalidEmail": "That email address isn't valid."
 }

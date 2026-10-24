@@ -1,15 +1,15 @@
 {
   "@@locale": "es",
   "signInTitle": "Iniciar sesión",
-  "signInPrompt": "Inicia sesión con un enlace mágico usando tu correo electrónico a continuación",
+  "signInPrompt": "Inicia sesión con un enlace enviado a tu correo electrónico a continuación",
   "emailLabel": "Correo electrónico",
   "emailRequired": "Introduce tu dirección de correo electrónico",
-  "sendMagicLink": "Enviar enlace mágico",
-  "sendingMagicLink": "Cargando",
+  "sendMagicLink": "Enviar enlace de inicio de sesión",
+  "sendingMagicLink": "Enviando…",
   "@sendingMagicLink": {
-    "description": "Sign-in button label while the magic link is being sent"
+    "description": "Replaces \"Send sign-in link\" on the button while the sign-in link is being sent"
   },
-  "magicLinkSent": "¡Revisa tu correo electrónico para encontrar el enlace de acceso!",
+  "magicLinkSent": "Revisa tu correo para ver el enlace de inicio de sesión.",
   "profileTitle": "Perfil",
   "userNameLabel": "Nombre de usuario",
   "websiteLabel": "Sitio web",
@@ -17,7 +17,7 @@
   "@updateProfile": {
     "description": "Button that saves the profile"
   },
-  "savingProfile": "Guardando...",
+  "savingProfile": "Guardando…",
   "profileUpdated": "¡Perfil actualizado correctamente!",
   "avatarUpdated": "¡Se ha actualizado tu imagen de perfil!",
   "myTasks": "Mis tareas",
@@ -179,5 +179,15 @@
       }
     }
   },
-  "offline": "No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo."
+  "offline": "No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.",
+  "errorUsernameTaken": "Ese nombre de usuario ya está en uso. Prueba con otro.",
+  "errorOutOfDate": "Tus tareas han cambiado en otro lugar, así que este cambio ya no es posible. Actualiza la lista e inténtalo de nuevo.",
+  "@errorOutOfDate": {
+    "description": "The server refused a task change because the task list on screen was out of date. The Refresh button reloads the list."
+  },
+  "errorPermissionDenied": "No tienes permiso para hacer eso.",
+  "errorSessionExpired": "Tu sesión ha caducado. Cierra sesión e inicia sesión de nuevo.",
+  "errorLinkExpired": "Ese enlace de inicio de sesión ha caducado o ya se usó. Solicita uno nuevo.",
+  "errorTooManyRequests": "Demasiados intentos. Espera un minuto e inténtalo de nuevo.",
+  "errorInvalidEmail": "Ese correo electrónico no es válido."
 }

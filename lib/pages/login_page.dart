@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:sqproject/l10n/app_localizations.dart';
 import 'package:sqproject/utils/constants.dart';
+import 'package:sqproject/utils/error_messages.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -37,7 +38,9 @@ class _LoginPageState extends State<LoginPage> {
         _emailController.clear();
       }
     } on AuthException catch (error) {
-      if (mounted) context.showErrorSnackBar(message: error.message);
+      if (mounted) {
+        context.showErrorSnackBar(message: errorMessage(l10n, error));
+      }
     }
     if (!mounted) return;
     setState(() {
@@ -60,7 +63,9 @@ class _LoginPageState extends State<LoginPage> {
       onError: (Object error) {
         if (mounted) {
           context.showErrorSnackBar(
-              message: error is AuthException ? error.message : '$error');
+              message: error is AuthException
+                  ? errorMessage(AppLocalizations.of(context), error)
+                  : '$error');
         }
       },
     );
