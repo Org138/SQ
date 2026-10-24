@@ -13,7 +13,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get signInPrompt =>
-      'Connectez-vous via le lien magique en saisissant votre adresse e-mail ci-dessous';
+      'Connectez-vous avec un lien envoyé à votre adresse e-mail ci-dessous';
 
   @override
   String get emailLabel => 'E-mail';
@@ -22,14 +22,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get emailRequired => 'Saisissez votre adresse e-mail';
 
   @override
-  String get sendMagicLink => 'Envoyer le lien magique';
+  String get sendMagicLink => 'Envoyer le lien de connexion';
 
   @override
-  String get sendingMagicLink => 'Chargement';
+  String get sendingMagicLink => 'Envoi en cours…';
 
   @override
   String get magicLinkSent =>
-      'Consultez votre messagerie pour trouver le lien de connexion !';
+      'Consultez votre boîte mail : un lien de connexion vous a été envoyé.';
 
   @override
   String get profileTitle => 'Profil';
@@ -215,27 +215,29 @@ class AppLocalizationsFr extends AppLocalizations {
       'Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.';
 
   @override
-  String get errorUsernameTaken => 'That user name is taken. Try another one.';
+  String get errorUsernameTaken =>
+      'Ce nom d\'utilisateur est déjà pris. Essayez-en un autre.';
 
   @override
   String get errorOutOfDate =>
-      'Your tasks changed somewhere else, so that change isn\'t allowed anymore. Refresh and try again.';
+      'Vos tâches ont été modifiées ailleurs, cette modification n\'est donc plus autorisée. Actualisez la page et réessayez.';
 
   @override
-  String get errorPermissionDenied => 'You don\'t have permission to do that.';
+  String get errorPermissionDenied =>
+      'Vous n\'avez pas l\'autorisation d\'effectuer cette action.';
 
   @override
   String get errorSessionExpired =>
-      'Your session has expired. Sign out and sign in again.';
+      'Votre session a expiré. Déconnectez-vous, puis reconnectez-vous.';
 
   @override
   String get errorLinkExpired =>
-      'That sign-in link has expired or was already used. Request a new one.';
+      'Ce lien de connexion a expiré ou a déjà été utilisé. Demandez-en un nouveau.';
 
   @override
   String get errorTooManyRequests =>
-      'Too many attempts. Wait a minute and try again.';
+      'Trop de tentatives. Patientez une minute, puis réessayez.';
 
   @override
-  String get errorInvalidEmail => 'That email address isn\'t valid.';
+  String get errorInvalidEmail => 'Cette adresse e-mail n\'est pas valide.';
 }

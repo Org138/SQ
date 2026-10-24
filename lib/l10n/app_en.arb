@@ -19,7 +19,7 @@
   "@updateProfile": {
     "description": "Button that saves the profile"
   },
-  "savingProfile": "Saving...",
+  "savingProfile": "Saving…",
   "profileUpdated": "Successfully updated profile!",
   "avatarUpdated": "Updated your profile image!",
   "myTasks": "My Tasks",

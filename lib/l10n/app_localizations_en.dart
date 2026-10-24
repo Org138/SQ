@@ -42,7 +42,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get updateProfile => 'Update';
 
   @override
-  String get savingProfile => 'Saving...';
+  String get savingProfile => 'Saving…';
 
   @override
   String get profileUpdated => 'Successfully updated profile!';

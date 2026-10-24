@@ -171,7 +171,7 @@ abstract class AppLocalizations {
   /// No description provided for @savingProfile.
   ///
   /// In en, this message translates to:
-  /// **'Saving...'**
+  /// **'Saving…'**
   String get savingProfile;
 
   /// No description provided for @profileUpdated.

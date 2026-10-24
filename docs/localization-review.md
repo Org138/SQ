@@ -29,7 +29,11 @@ git diff <reviewed commit> -- lib/l10n/app_de.arb
 
 ## Open issues
 
-- **All locales:** the translations still mix "magic link" and "sign-in
-  link". The English text now says "sign-in link" everywhere, and a Lingo.dev
-  glossary entry fixes each language's term (de "Anmeldelink", es "enlace de
-  inicio de sesión", fr "lien de connexion"). Check after the next run.
+- **fr:** `errorOutOfDate` says "Actualisez la page" (refresh the page), but
+  the app has no pages; the button it points to says "Actualiser". Fix it
+  through the English source or the glossary rather than by hand.
+
+Resolved: "magic link" no longer appears in any translation. Since Lingo.dev
+run `lrg_avaYGGA0O0S59HA2L7DG`, each locale uses its glossary term for
+"sign-in link" (de "Anmeldelink", es "enlace de inicio de sesión", fr "lien
+de connexion"). This was checked by search, not by a fluent speaker.
