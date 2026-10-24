@@ -32,7 +32,7 @@
   "uploadAvatar": "Subir",
   "avatarWrongType": "Usa una imagen JPEG, PNG o WebP.",
   "avatarTooLarge": "Las imágenes deben pesar 1 MB o menos.",
-  "refresh": "Actualizar",
+  "refresh": "Recargar",
   "newTask": "Nueva tarea",
   "@newTask": {
     "description": "Add-task button tooltip and the add-task dialog title"
@@ -147,6 +147,15 @@
   },
   "noDependencyCandidates": "No se puede vincular ninguna otra tarea sin crear un bucle. Añade más tareas primero.",
   "saveDependencies": "Guardar",
+  "dependenciesSelected": "{count, plural, =0{Ninguna tarea seleccionada} one{{count} tarea seleccionada} many{{count} de tareas seleccionadas} other{{count} tareas seleccionadas}}",
+  "@dependenciesSelected": {
+    "description": "How many tasks are checked in the dependencies dialog",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "blockedBy": "Bloqueada por {titles}",
   "@blockedBy": {
     "description": "Why a task can't start or finish. Matches the database trigger's message.",

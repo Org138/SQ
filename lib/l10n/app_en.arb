@@ -130,6 +130,13 @@
   },
   "noDependencyCandidates": "No other tasks can be linked without creating a loop. Add more tasks first.",
   "saveDependencies": "Save",
+  "dependenciesSelected": "{count, plural, =0{No tasks selected} one{{count} task selected} other{{count} tasks selected}}",
+  "@dependenciesSelected": {
+    "description": "How many tasks are checked in the dependencies dialog",
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
 
   "blockedBy": "Blocked by {titles}",
   "@blockedBy": {

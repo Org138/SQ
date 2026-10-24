@@ -259,6 +259,24 @@ void main() {
     expect(find.text('D'), findsOneWidget);
   });
 
+  testWidgets('the dependencies dialog counts the checked tasks',
+      (tester) async {
+    await pumpTasksPage(tester);
+    await openMenu(tester, 'A');
+    await tester.tap(find.text('Edit dependencies…'));
+    await tester.pumpAndSettle();
+    expect(find.text('1 task selected'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(CheckboxListTile, 'B'));
+    await tester.pump();
+    expect(find.text('No tasks selected'), findsOneWidget);
+
+    await tester.tap(find.widgetWithText(CheckboxListTile, 'B'));
+    await tester.tap(find.widgetWithText(CheckboxListTile, 'C'));
+    await tester.pump();
+    expect(find.text('2 tasks selected'), findsOneWidget);
+  });
+
   // The app's own checks passed, so the board on screen was out of date.
   testWidgets('says the tasks changed when a gating trigger rejects',
       (tester) async {

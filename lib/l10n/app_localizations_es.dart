@@ -71,7 +71,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get avatarTooLarge => 'Las imágenes deben pesar 1 MB o menos.';
 
   @override
-  String get refresh => 'Actualizar';
+  String get refresh => 'Recargar';
 
   @override
   String get newTask => 'Nueva tarea';
@@ -194,6 +194,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get saveDependencies => 'Guardar';
+
+  @override
+  String dependenciesSelected(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tareas seleccionadas',
+      many: '$count de tareas seleccionadas',
+      one: '$count tarea seleccionada',
+      zero: 'Ninguna tarea seleccionada',
+    );
+    return '$_temp0';
+  }
 
   @override
   String blockedBy(String titles) {

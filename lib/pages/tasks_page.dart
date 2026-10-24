@@ -542,22 +542,32 @@ class _DependenciesDialogState extends State<_DependenciesDialog> {
         width: double.maxFinite,
         child: widget.candidates.isEmpty
             ? Text(l10n.noDependencyCandidates)
-            : ListView(
-                shrinkWrap: true,
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (final candidate in widget.candidates)
-                    CheckboxListTile(
-                      value: _selected.contains(candidate.id),
-                      title: Text(candidate.title),
-                      subtitle: Text(_statusLabel(l10n, candidate.status)),
-                      onChanged: (checked) => setState(() {
-                        if (checked == true) {
-                          _selected.add(candidate.id);
-                        } else {
-                          _selected.remove(candidate.id);
-                        }
-                      }),
+                  Text(l10n.dependenciesSelected(_selected.length)),
+                  Flexible(
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: [
+                        for (final candidate in widget.candidates)
+                          CheckboxListTile(
+                            value: _selected.contains(candidate.id),
+                            title: Text(candidate.title),
+                            subtitle:
+                                Text(_statusLabel(l10n, candidate.status)),
+                            onChanged: (checked) => setState(() {
+                              if (checked == true) {
+                                _selected.add(candidate.id);
+                              } else {
+                                _selected.remove(candidate.id);
+                              }
+                            }),
+                          ),
+                      ],
                     ),
+                  ),
                 ],
               ),
       ),
