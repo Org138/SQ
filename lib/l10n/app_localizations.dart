@@ -108,10 +108,10 @@ abstract class AppLocalizations {
   /// **'Sign In'**
   String get signInTitle;
 
-  /// No description provided for @signInPrompt.
+  /// Shown above the email field on the sign-in page
   ///
   /// In en, this message translates to:
-  /// **'Sign in with a link sent to your email below'**
+  /// **'Enter your email below and we\'ll send you a sign-in link'**
   String get signInPrompt;
 
   /// No description provided for @emailLabel.

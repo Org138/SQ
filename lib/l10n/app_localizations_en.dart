@@ -12,7 +12,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get signInTitle => 'Sign In';
 
   @override
-  String get signInPrompt => 'Sign in with a link sent to your email below';
+  String get signInPrompt =>
+      'Enter your email below and we\'ll send you a sign-in link';
 
   @override
   String get emailLabel => 'Email';
