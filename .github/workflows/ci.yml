@@ -19,6 +19,8 @@ jobs:
       - run: flutter pub get
       # The pgTAP copy of the shared dependency rules must match the fixture
       - run: dart run tool/generate_dependency_rules.dart --check
+      # Every target locale has every English message (no Lingo key needed)
+      - run: dart run tool/check_arb_keys.dart
       # The committed app_localizations*.dart files must match the ARB files,
       # including a new locale's file (which git diff alone wouldn't see)
       - run: |
