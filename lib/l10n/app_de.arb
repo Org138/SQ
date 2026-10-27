@@ -1,7 +1,10 @@
 {
   "@@locale": "de",
   "signInTitle": "Anmelden",
-  "signInPrompt": "Melde dich unten mit einem Link an, den wir dir per E-Mail schicken",
+  "signInPrompt": "Gib unten deine E-Mail-Adresse ein und wir schicken dir einen Anmeldelink",
+  "@signInPrompt": {
+    "description": "Shown above the email field on the sign-in page"
+  },
   "emailLabel": "E-Mail",
   "emailRequired": "Gib deine E-Mail-Adresse ein",
   "sendMagicLink": "Anmeldelink senden",

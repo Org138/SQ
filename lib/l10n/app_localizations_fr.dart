@@ -13,7 +13,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get signInPrompt =>
-      'Connectez-vous avec un lien envoyé à votre adresse e-mail ci-dessous';
+      'Saisissez votre adresse e-mail ci-dessous et nous vous enverrons un lien de connexion';
 
   @override
   String get emailLabel => 'E-mail';

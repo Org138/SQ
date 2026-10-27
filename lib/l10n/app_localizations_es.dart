@@ -13,7 +13,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get signInPrompt =>
-      'Inicia sesión con un enlace enviado a tu correo electrónico a continuación';
+      'Escribe tu correo electrónico abajo y te enviaremos un enlace de inicio de sesión';
 
   @override
   String get emailLabel => 'Correo electrónico';

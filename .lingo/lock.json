@@ -2,16 +2,16 @@
   "version": 1,
   "files": {
     "lib/l10n/app_de.arb": {
-      "sha256": "a86a4f25634aed50ecfc4028c6d38d99ee651f38c889ace4b7359e4e7d27919a"
+      "sha256": "c8fb2e95b043241ff1ef0cb0683f011d8d107f3f2a265684d662c6ec96068be4"
     },
     "lib/l10n/app_en.arb": {
-      "sha256": "2483d9f0d0cfba065b00cf0c2d4585ca248d2aea79eed0c9911be8e72825ceda"
+      "sha256": "dfcf551d347ec301f04a1881f1c356ac8492a60b19f278faff27205890158813"
     },
     "lib/l10n/app_es.arb": {
-      "sha256": "50a54cf8a429b0366ba75e8530318c98b53d92840ab89baea01e328656955cd1"
+      "sha256": "26b06600405e1628721180d2497d3f535784af42d63d69009bf00f26676c2fd1"
     },
     "lib/l10n/app_fr.arb": {
-      "sha256": "f31c1117b322e466647e65cb2f516db8921607bd53bff4dd5b9d62a44d89ca5c"
+      "sha256": "01f38156b7712aae8168635f5a125286911556c4a73e12147b85fbe283c30826"
     }
   }
 }
