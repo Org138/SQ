@@ -94,6 +94,8 @@ class _LoginPageState extends State<LoginPage> {
               controller: _emailController,
               decoration: InputDecoration(labelText: l10n.emailLabel),
               keyboardType: TextInputType.emailAddress,
+              // Clears the "enter your email" error as soon as the user types.
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) =>
                   (value ?? '').trim().isEmpty ? l10n.emailRequired : null,
             ),
