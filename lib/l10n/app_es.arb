@@ -1,7 +1,10 @@
 {
   "@@locale": "es",
   "signInTitle": "Iniciar sesión",
-  "signInPrompt": "Inicia sesión con un enlace enviado a tu correo electrónico a continuación",
+  "signInPrompt": "Escribe tu correo electrónico abajo y te enviaremos un enlace de inicio de sesión",
+  "@signInPrompt": {
+    "description": "Shown above the email field on the sign-in page"
+  },
   "emailLabel": "Correo electrónico",
   "emailRequired": "Introduce tu dirección de correo electrónico",
   "sendMagicLink": "Enviar enlace de inicio de sesión",

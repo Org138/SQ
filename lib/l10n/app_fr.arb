@@ -1,7 +1,10 @@
 {
   "@@locale": "fr",
   "signInTitle": "Connexion",
-  "signInPrompt": "Connectez-vous avec un lien envoyé à votre adresse e-mail ci-dessous",
+  "signInPrompt": "Saisissez votre adresse e-mail ci-dessous et nous vous enverrons un lien de connexion",
+  "@signInPrompt": {
+    "description": "Shown above the email field on the sign-in page"
+  },
   "emailLabel": "E-mail",
   "emailRequired": "Saisissez votre adresse e-mail",
   "sendMagicLink": "Envoyer le lien de connexion",

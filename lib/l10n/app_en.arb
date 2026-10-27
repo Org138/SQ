@@ -2,7 +2,10 @@
   "@@locale": "en",
 
   "signInTitle": "Sign In",
-  "signInPrompt": "Sign in with a link sent to your email below",
+  "signInPrompt": "Enter your email below and we'll send you a sign-in link",
+  "@signInPrompt": {
+    "description": "Shown above the email field on the sign-in page"
+  },
   "emailLabel": "Email",
   "emailRequired": "Enter your email address",
   "sendMagicLink": "Send sign-in link",
