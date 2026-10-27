@@ -1,7 +1,7 @@
 # SQ
 [![CI](https://github.com/Org138/SQ/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Org138/SQ/actions/workflows/ci.yml)
 
-A Flutter + Supabase app: magic-link sign-in, a user profile with an avatar, and a task list where tasks can be blocked by other tasks.
+A Flutter + Supabase app: sign-in with an emailed link (a Supabase magic link), a user profile with an avatar, and a task list where tasks can be blocked by other tasks. The app is in English, German, Spanish and French.
 
 ## Getting Started
 
@@ -48,7 +48,7 @@ flutter run --dart-define-from-file=supabase.json
 
 The app stops at startup with an error if `SUPABASE_URL` or `SUPABASE_ANON_KEY` is missing.
 
-On web, the magic link always returns to the project's Site URL, but Flutter serves on a random port by default. Pin the port so it matches, for example `http://localhost:3000`
+On web, the magic link always returns to the project's Site URL, but Flutter serves on a random port by default. Pin the port so it matches, for example `http://localhost:3000`:
 
 ```bash
 flutter run -d chrome --web-port 3000 --dart-define-from-file=supabase.json
@@ -264,7 +264,7 @@ To change or add text:
 
 4. Run `flutter test`, then commit the ARB files, `.lingo/lock.json` and the generated Dart files together.
 
-Translation runs are manual: the Lingo.dev GitHub workflows are turned off in `.lingo/config.json`. Until the next run, `test/l10n_arb_test.dart` fails for any translated file that is missing a key or changes a placeholder, and CI fails if the generated Dart files don't match the ARB files.
+Translation runs are manual: the Lingo.dev GitHub workflows are turned off in `.lingo/config.json`. Until the next run, CI fails: `dart run tool/check_arb_keys.dart` reports any locale missing an English message, or with an extra or empty one, `test/l10n_arb_test.dart` reports changed placeholders, and the generated Dart files must match the ARB files.
 
 Don't edit the translated ARB files by hand, because a later run can translate the key again and undo the edit. Fix wording through the English text or the Lingo.dev glossary and brand voice instead. [docs/localization.md](docs/localization.md) lists each language's form of address and fixed terms, and [docs/localization-review.md](docs/localization-review.md) records which languages a fluent speaker has checked.
 
