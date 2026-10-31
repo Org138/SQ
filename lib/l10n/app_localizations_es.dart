@@ -29,7 +29,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get magicLinkSent =>
-      'Revisa tu correo para ver el enlace de inicio de sesión.';
+      'Revisa tu correo para encontrar el enlace de inicio de sesión.';
 
   @override
   String get profileTitle => 'Perfil';

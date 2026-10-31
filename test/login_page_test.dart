@@ -83,7 +83,7 @@ void main() {
 
     expect(requests.single.url.path, '/auth/v1/otp');
     expect(requests.single.body, contains('"email":"alice@example.com"'));
-    expect(find.text('Check your email for a sign-in link.'), findsOneWidget);
+    expect(find.text('Please check your email for a sign-in link.'), findsOneWidget);
   });
 
   testWidgets('the button says it is sending until the server answers',

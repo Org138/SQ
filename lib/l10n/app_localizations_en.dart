@@ -28,7 +28,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sendingMagicLink => 'Sending…';
 
   @override
-  String get magicLinkSent => 'Check your email for a sign-in link.';
+  String get magicLinkSent => 'Please check your email for a sign-in link.';
 
   @override
   String get profileTitle => 'Profile';
