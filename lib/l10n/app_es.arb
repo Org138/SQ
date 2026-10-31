@@ -12,7 +12,7 @@
   "@sendingMagicLink": {
     "description": "Replaces \"Send sign-in link\" on the button while the sign-in link is being sent"
   },
-  "magicLinkSent": "Revisa tu correo para ver el enlace de inicio de sesión.",
+  "magicLinkSent": "Revisa tu correo para encontrar el enlace de inicio de sesión.",
   "profileTitle": "Perfil",
   "userNameLabel": "Nombre de usuario",
   "websiteLabel": "Sitio web",

@@ -29,7 +29,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get magicLinkSent =>
-      'Consultez votre boîte mail : un lien de connexion vous a été envoyé.';
+      'Veuillez consulter votre e-mail pour trouver votre lien de connexion.';
 
   @override
   String get profileTitle => 'Profil';

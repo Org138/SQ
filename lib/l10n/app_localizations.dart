@@ -141,7 +141,7 @@ abstract class AppLocalizations {
   /// No description provided for @magicLinkSent.
   ///
   /// In en, this message translates to:
-  /// **'Check your email for a sign-in link.'**
+  /// **'Please check your email for a sign-in link.'**
   String get magicLinkSent;
 
   /// No description provided for @profileTitle.

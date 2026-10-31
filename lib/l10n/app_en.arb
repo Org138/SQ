@@ -13,7 +13,7 @@
   "@sendingMagicLink": {
     "description": "Replaces \"Send sign-in link\" on the button while the sign-in link is being sent"
   },
-  "magicLinkSent": "Check your email for a sign-in link.",
+  "magicLinkSent": "Please check your email for a sign-in link.",
 
   "profileTitle": "Profile",
   "userNameLabel": "User Name",

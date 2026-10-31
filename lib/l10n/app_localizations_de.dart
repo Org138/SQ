@@ -29,7 +29,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get magicLinkSent =>
-      'Prüfe dein E-Mail-Postfach auf einen Anmeldelink.';
+      'Bitte prüfe dein E-Mail-Postfach auf einen Anmeldelink.';
 
   @override
   String get profileTitle => 'Profil';
