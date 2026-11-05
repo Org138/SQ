@@ -42,6 +42,7 @@ class FakeBackend {
     {'task_id': 'a', 'depends_on_task_id': 'b'},
   ];
 
+  final inserts = <http.Request>[];
   final patches = <http.Request>[];
 
   /// Number of reads, to check writes don't trigger a reload.
@@ -71,6 +72,7 @@ class FakeBackend {
         return http.Response(jsonEncode(dependencies), 200,
             headers: json, request: request);
       case ('POST', '/rest/v1/tasks'):
+        inserts.add(request);
         final task = {
           'id': 'new-${tasks.length}',
           'description': null,
@@ -125,8 +127,11 @@ class MemoryAsyncStorage extends GotrueAsyncStorage {
 
 late FakeBackend backend;
 
-Future<void> pumpTasksPage(WidgetTester tester) async {
+final en = lookupAppLocalizations(const Locale('en'));
+
+Future<void> pumpTasksPage(WidgetTester tester, {Locale? locale}) async {
   await tester.pumpWidget(MaterialApp(
+    locale: locale,
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     home: const TasksPage(),
@@ -136,12 +141,36 @@ Future<void> pumpTasksPage(WidgetTester tester) async {
 }
 
 /// Opens the actions menu on the task titled [title].
-Future<void> openMenu(WidgetTester tester, String title) async {
+Future<void> openMenu(WidgetTester tester, String title,
+    {AppLocalizations? l10n}) async {
   final tile =
       find.ancestor(of: find.text(title), matching: find.byType(ListTile));
-  await tester
-      .tap(find.descendant(of: tile, matching: find.byTooltip('Task actions')));
+  await tester.tap(find.descendant(
+      of: tile, matching: find.byTooltip((l10n ?? en).taskActions)));
   await tester.pumpAndSettle();
+}
+
+/// Picks the 15th of the current month in the new-task dialog's date
+/// picker, and returns that date.
+Future<DateTime> pickDueDate(WidgetTester tester,
+    [AppLocalizations? l10n]) async {
+  await tester.tap(find.text((l10n ?? en).pickDueDate));
+  await tester.pumpAndSettle();
+  await tester.tap(find.text('15'));
+  final ok = MaterialLocalizations.of(
+          tester.element(find.byType(DatePickerDialog)))
+      .okButtonLabel;
+  await tester.tap(find.text(ok));
+  await tester.pumpAndSettle();
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, 15);
+}
+
+/// Makes the screen a small phone's, 320 × 640, for the rest of the test.
+void useSmallPhone(WidgetTester tester) {
+  tester.view.physicalSize = const Size(320, 640);
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
 }
 
 /// The menu item labeled [label] (menu items are typed by a private enum).
@@ -254,9 +283,47 @@ void main() {
     await tester.tap(find.text('Add'));
     await tester.pumpAndSettle();
 
+    // No description or due date was given, so none is sent.
+    expect(jsonDecode(backend.inserts.single.body), {'title': 'D'});
     expect(backend.gets, 2);
     expect(find.text('Ready to start (1)'), findsOneWidget);
     expect(find.text('D'), findsOneWidget);
+  });
+
+  testWidgets('a task shows its due date with its other details',
+      (tester) async {
+    backend.tasks[0]['due_date'] = '2026-10-20';
+    await pumpTasksPage(tester);
+
+    expect(find.text('Due Oct 20, 2026\nWaiting on: B'), findsOneWidget);
+  });
+
+  testWidgets('a new task can be given a due date, or have it cleared',
+      (tester) async {
+    await pumpTasksPage(tester);
+    await tester.tap(find.byTooltip('New task'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.widgetWithText(TextField, 'Title'), 'D');
+    await tester.pump();
+    expect(find.text('No due date'), findsOneWidget);
+    expect(find.byTooltip('Clear due date'), findsNothing);
+
+    await pickDueDate(tester);
+    await tester.tap(find.byTooltip('Clear due date'));
+    await tester.pump();
+    expect(find.text('No due date'), findsOneWidget);
+    expect(find.byTooltip('Clear due date'), findsNothing);
+
+    final due = await pickDueDate(tester);
+    expect(find.text(en.taskDue(due)), findsOneWidget);
+    await tester.tap(find.text('Add'));
+    await tester.pumpAndSettle();
+
+    // Sent as the date column's YYYY-MM-DD, whatever the locale.
+    final month = due.month.toString().padLeft(2, '0');
+    expect(jsonDecode(backend.inserts.single.body),
+        {'title': 'D', 'due_date': '${due.year}-$month-15'});
+    expect(find.text(en.taskDue(due)), findsOneWidget);
   });
 
   testWidgets('the dependencies dialog counts the checked tasks',
@@ -293,4 +360,43 @@ void main() {
         findsOneWidget);
     expect(find.text('Done (1)'), findsOneWidget);
   });
+
+  // Text that doesn't fit (e.g. a long German label in a Row) fails the
+  // test with an overflow error.
+  for (final locale in AppLocalizations.supportedLocales) {
+    testWidgets('the board and its dialogs fit a small phone in $locale',
+        (tester) async {
+      useSmallPhone(tester);
+      final l10n = lookupAppLocalizations(locale);
+      backend.tasks[0]['due_date'] = '2026-10-20';
+      await pumpTasksPage(tester, locale: locale);
+
+      expect(find.text(l10n.myTasks), findsOneWidget);
+      expect(find.text(l10n.sectionInProgress(1)), findsOneWidget);
+      expect(find.text(l10n.sectionBlocked(1)), findsOneWidget);
+      expect(find.text(l10n.sectionDone(1)), findsOneWidget);
+      expect(
+          find.text('${l10n.taskDue(DateTime(2026, 10, 20))}\n'
+              '${l10n.waitingOn('B')}'),
+          findsOneWidget);
+
+      // The blocked task's menu, with the reason under each disabled item.
+      await openMenu(tester, 'A', l10n: l10n);
+      expect(find.text(l10n.blockedBy('"B"')), findsNWidgets(2));
+      await tester.tap(find.text(l10n.editDependencies));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.dependenciesTitle('A')), findsOneWidget);
+      expect(find.text(l10n.dependenciesSelected(1)), findsOneWidget);
+      await tester.tap(find.text(l10n.cancel));
+      await tester.pumpAndSettle();
+
+      // The new-task dialog at its widest, with a due date set.
+      await tester.tap(find.byTooltip(l10n.newTask));
+      await tester.pumpAndSettle();
+      expect(find.text(l10n.noDueDate), findsOneWidget);
+      final due = await pickDueDate(tester, l10n);
+      expect(find.text(l10n.taskDue(due)), findsOneWidget);
+      expect(find.byTooltip(l10n.clearDueDate), findsOneWidget);
+    });
+  }
 }
