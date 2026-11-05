@@ -478,13 +478,17 @@ class _NewTaskDialogState extends State<_NewTaskDialog> {
             minLines: 1,
           ),
           const SizedBox(height: 12),
-          Row(
+          // On its own line: beside the buttons, a small phone leaves the
+          // date only a few pixels.
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(
+                _dueDate == null ? l10n.noDueDate : l10n.taskDue(_dueDate!)),
+          ),
+          Wrap(
+            alignment: WrapAlignment.end,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              Expanded(
-                child: Text(_dueDate == null
-                    ? l10n.noDueDate
-                    : l10n.taskDue(_dueDate!)),
-              ),
               if (_dueDate != null)
                 IconButton(
                   tooltip: l10n.clearDueDate,
